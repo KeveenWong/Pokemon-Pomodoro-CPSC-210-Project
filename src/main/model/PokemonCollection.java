@@ -18,10 +18,15 @@ public class PokemonCollection {
     }
 
     // EFFECTS: prints each name of Pokemon in collection list
-    public static void printCollection() {
-        for (Pokemon pokemon : collection) {
-            System.out.println(pokemon.getPokemonName());
+    public static Boolean printCollection() {
+        if (!(collection.isEmpty())) {
+            for (Pokemon pokemon : collection) {
+                System.out.println(pokemon.getPokemonName());
+            }
+            return true;
         }
+        System.out.println("It's awfully empty in here... try collecting some Pokémon!");
+        return false;
 
     }
 

@@ -71,9 +71,7 @@ public class PomodoroTimer {
         }, delay, period);
     }
 
-    // MODIFIES: TempCollection, remainingTime, state
-    // EFFECTS: Switches timer states after current timer runs out, adds Pokemon to TempCollection after Pomodoro,
-    // and resets timer appropriately.
+    // EFFECTS: swaps between cases
     public void switchBetweenCases() throws NullPointerException {
         switch (state) {
             case Pomodoro:
@@ -88,6 +86,8 @@ public class PomodoroTimer {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds random pokemon to collection once complete, and checks if next break is long, else short
     private void pomodoroFinish() {
         System.out.println("Pomodoro timer complete.");
         Pokemon pokemon = Pokemon.getRandomPokemon();
@@ -106,12 +106,16 @@ public class PomodoroTimer {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets next break to Pomodoro timer following short break
     private void shortBreakFinish() {
         System.out.println("Short break complete. Entering Pomodoro timer.");
         remainingTime = pomodoroLength;
         state = State.Pomodoro;
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets next break to Pomodoro timer following long break
     private void longBreakFinish() {
         System.out.println("Long break complete. Entering Pomodoro timer.");
         state = State.Pomodoro;

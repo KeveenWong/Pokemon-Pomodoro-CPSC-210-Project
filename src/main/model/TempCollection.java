@@ -18,6 +18,11 @@ public class TempCollection {
         return tempCollection;
     }
 
+    // getter for size
+    public static int getTempSize() {
+        return tempCollection.size();
+    }
+
     // MODIFIES: tempCollection
     // EFFECTS: adds given Pokemon to tempCollection
     public static void addPokemonToTemporaryCollection(Pokemon pokemon) {
@@ -25,14 +30,15 @@ public class TempCollection {
     }
 
     // EFFECTS: if tempCollection is empty, do nothing. else, print out list of Pokemon names in tempCollection
-    public static void printTempCollection() {
+    public static Boolean printTempCollection() {
         if (!(tempCollection.isEmpty())) {
             System.out.println("You have Pokémon waiting to be added to your collection!");
             for (Pokemon pokemon : tempCollection) {
                 System.out.println(pokemon.getPokemonName());
             }
-
+            return true;
         }
+        return false;
     }
 
     // EFFECTS: clears tempCollection

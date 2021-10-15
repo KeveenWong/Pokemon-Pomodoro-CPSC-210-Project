@@ -8,20 +8,86 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PokemonTest {
-    private Pokemon pokemon;
-    private PokemonCollection collection;
-    private TempCollection tempCollection;
-    private AllPokemonList pokemonList;
 
     @Test
     public void testGetPokemonName() {
-
+        Pokemon pokemon = new Pokemon("test", "");
+        assertEquals("test", pokemon.getPokemonName());
     }
 
     @Test
     public void testGetRandomPokemon() {
-        int totalPokemon = AllPokemonList.pokemonList.size();
-        int highestIndex;
+        for (int i = 0; i < 1000; i++) {
+            Pokemon.getRandomPokemon();
+        }
     }
 
+    @Test
+    public void testPrintTempCollectionEmpty() {
+        TempCollection.init();
+        TempCollection.printTempCollection();
+        assertFalse(TempCollection.printTempCollection());
+    }
+
+    @Test
+    public void testPrintTempCollectionNotEmpty() {
+        Pokemon pokemon1 = new Pokemon("test1", "");
+        Pokemon pokemon2 = new Pokemon("test2", "");
+
+        TempCollection.init();
+        TempCollection.addPokemonToTemporaryCollection(pokemon1);
+        TempCollection.addPokemonToTemporaryCollection(pokemon2);
+        assertTrue(TempCollection.printTempCollection());
+
+    }
+
+    @Test
+    public void testResetTemp() {
+        Pokemon pokemon1 = new Pokemon("test1", "");
+        Pokemon pokemon2 = new Pokemon("test2", "");
+        TempCollection.init();
+        TempCollection.addPokemonToTemporaryCollection(pokemon1);
+        TempCollection.addPokemonToTemporaryCollection(pokemon2);
+
+        assertEquals(2, TempCollection.getTempSize());
+        TempCollection.resetTemp();
+        assertEquals(0, TempCollection.getTempSize());
+
+    }
+
+    @Test
+    public void testGetTempCollection() {
+        TempCollection.init();
+        assertEquals(0, TempCollection.getTempCollection().size());
+    }
+
+    @Test
+    public void testGetCollection() {
+        PokemonCollection.init();
+        assertEquals(0, PokemonCollection.getCollection().size());
+    }
+
+    @Test
+    public void testPrintCollection() {
+        Pokemon pokemon1 = new Pokemon("test1", "");
+        Pokemon pokemon2 = new Pokemon("test2", "");
+
+        PokemonCollection.init();
+        PokemonCollection.addPokemonToCollection(pokemon1);
+        PokemonCollection.addPokemonToCollection(pokemon2);
+        assertTrue(PokemonCollection.printCollection());
+    }
+
+    @Test
+    public void testAddPokemonToCollection() {
+        Pokemon pokemon1 = new Pokemon("test1", "");
+        Pokemon pokemon2 = new Pokemon("test2", "");
+
+        PokemonCollection.init();
+        PokemonCollection.addPokemonToCollection(pokemon1);
+        PokemonCollection.addPokemonToCollection(pokemon2);
+
+        assertEquals(2, PokemonCollection.getCollection().size());
+
+    }
 }
