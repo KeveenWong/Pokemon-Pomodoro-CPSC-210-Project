@@ -1,5 +1,7 @@
 package model;
 
+import ui.PomodoroPokemon;
+
 import java.util.TimerTask;
 import java.util.Timer;
 
