@@ -19,7 +19,7 @@ class PomodoroTimerTest {
         assertEquals(600, timer.getRemainingTime());
         try
         {
-            Thread.sleep(1000);
+            Thread.sleep(1100);
         }
         catch(InterruptedException ex)
         {
@@ -30,7 +30,67 @@ class PomodoroTimerTest {
     }
 
     @Test
-    void testSwitchBetweenCases() {
-        timer.switchBetweenCases();
+    void testTickRemainingTime() {
+        timer.startTimer(2);
+        timer.tickRemainingTime();
+        assertEquals(1, timer.getRemainingTime());
+        timer.tickRemainingTime();
+        assertEquals(timer.getState(), PomodoroTimer.State.ShortBreak);
+        assertEquals(timer.getShortBreak(), timer.getRemainingTime());
     }
+
+    @Test
+    void testPauseTimer() {
+        timer.startTimer(5);
+        try
+        {
+            Thread.sleep(1100);
+        }
+        catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+        assertEquals(4, timer.getRemainingTime());
+        timer.pauseTimer();
+        try
+        {
+            Thread.sleep(5000);
+        }
+        catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+        assertEquals(4, timer.getRemainingTime());
+    }
+
+    @Test
+    void testUnpauseTimer() {
+        timer.startTimer(5);
+        try {
+            Thread.sleep(1100);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+        assertEquals(4, timer.getRemainingTime());
+        timer.pauseTimer();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+        timer.unpauseTimer();
+        try {
+            Thread.sleep(3100);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+        assertEquals(1, timer.getRemainingTime());
+
+    }
+
+    @Test
+    void testResetTimer() {
+        timer.startTimer(10);
+        timer.resetTimer();
+        assertEquals(1500, timer.getRemainingTime());
+    }
+
 }

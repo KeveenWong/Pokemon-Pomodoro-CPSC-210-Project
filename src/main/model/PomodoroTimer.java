@@ -20,8 +20,8 @@ public class PomodoroTimer {
     private static int pomodoroLength = 1500;  // standard Pomodoro Length is 25 minutes
     private static int shortBreak = 300;      // standard break length is 5 minutes
     private static int longBreak = 900;       // after 4 Pomodoros, break is 15 minutes
-    private static int delay = 1;
-    private static int period = 1;
+    private static int delay = 1000;
+    private static int period = 1000;
     private boolean paused = true;
     private int remainingTime;                // remaining time in timer
     private int pomodoroCounter;                      // tracks number of fully complete Pomodoros
@@ -42,6 +42,14 @@ public class PomodoroTimer {
 
     public Integer getSecondCounter() {
         return secondCounter;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public Integer getShortBreak() {
+        return shortBreak;
     }
 
     // REQUIRES:
@@ -73,6 +81,7 @@ public class PomodoroTimer {
 
 
     public void switchBetweenCases() {
+        TempCollection.init();
         switch (state) {
             case Pomodoro:
                 System.out.println("Pomodoro timer complete.");
@@ -95,7 +104,8 @@ public class PomodoroTimer {
         }
     }
 
-    private void tickRemainingTime() {
+    public void tickRemainingTime() {
+        TempCollection.init();
         if (remainingTime == 1) {
             if (state == State.ShortBreak || state == State.LongBreak) {
                 pomodoroCounter++;
@@ -112,6 +122,7 @@ public class PomodoroTimer {
             switchBetweenCases();
             timer.cancel();
             startTicking();
+            return;
         }
         remainingTime--;
         secondCounter++;
