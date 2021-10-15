@@ -120,6 +120,10 @@ public class PomodoroTimer {
             return;
         }
         remainingTime--;
+        reportTime();
+    }
+
+    public void reportTime() {
         if (secondCounter == 59) {
             secondCounter = 0;
             System.out.println(round(remainingTime / 60));
