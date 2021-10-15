@@ -93,10 +93,52 @@ class PomodoroTimerTest {
         assertEquals(0, timer.getPomodoroCounter());
         assertEquals(timer.getState(), PomodoroTimer.State.LongBreak);
 
+    }
 
+    @Test
+    public void testPomodoroFinish() throws InterruptedException {
+        TempCollection.init();
+        timer.startTimer(5);
+        Thread.sleep(5100);
+        assertEquals(timer.getState(), PomodoroTimer.State.ShortBreak);
 
+    }
 
+    @Test
+    public void testShortBreakFinish() throws InterruptedException {
+        TempCollection.init();
+        timer.startTimer(5);
+        Thread.sleep(5100);
+        // start short break
+        Thread.sleep(2100);
+        // start Pomodoro
+        assertEquals(timer.getState(), PomodoroTimer.State.Pomodoro);
+    }
 
+    @Test
+    public void testLongBreakFinish() throws InterruptedException {
+        TempCollection.init();
+        timer.startTimer(5);
+        Thread.sleep(5100);
+        // 1 pomodoro
+        // start short break
+        Thread.sleep(2100);
+        // start Pomodoro
+        assertEquals(timer.getState(), PomodoroTimer.State.Pomodoro);
+        Thread.sleep(4100);
+        // 2 pomodoro
+        // start short break
+        Thread.sleep(2100);
+        // start Pomodoro
+        Thread.sleep(4100);
+        // 3 pomodoro
+        // start short break
+        Thread.sleep(2100);
+        // start Pomodoro
+        Thread.sleep(4100);
+        // 4 pomodoro
+        // start long break
+        assertEquals(timer.getState(), PomodoroTimer.State.LongBreak);
     }
 
 }
