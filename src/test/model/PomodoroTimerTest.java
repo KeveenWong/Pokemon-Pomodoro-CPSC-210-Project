@@ -12,6 +12,8 @@ class PomodoroTimerTest {
     public void runBefore() {
         timer = new PomodoroTimer();
     }
+    private static final int DELTA = 1;
+
 
     @Test
     public void testStartTimer() throws InterruptedException {
@@ -29,23 +31,23 @@ class PomodoroTimerTest {
     @Test
     public void testPauseTimer() throws InterruptedException {
         timer.startTimer(5);
-        Thread.sleep(1100);
-        assertEquals(4, timer.getRemainingTime());
+        Thread.sleep(1000);
+        assertEquals(4, timer.getRemainingTime(), DELTA);
         timer.pauseTimer();
         Thread.sleep(5000);
-        assertEquals(4, timer.getRemainingTime());
+        assertEquals(4, timer.getRemainingTime(), DELTA);
     }
 
     @Test
     public void testUnpauseTimer() throws InterruptedException {
         timer.startTimer(5);
-        Thread.sleep(1100);
-        assertEquals(4, timer.getRemainingTime());
+        Thread.sleep(1000);
+        assertEquals(4, timer.getRemainingTime(), DELTA);
         timer.pauseTimer();
         Thread.sleep(2000);
         timer.unpauseTimer();
-        Thread.sleep(3100);
-        assertEquals(1, timer.getRemainingTime());
+        Thread.sleep(3000);
+        assertEquals(1, timer.getRemainingTime(), DELTA);
 
     }
 
@@ -71,9 +73,30 @@ class PomodoroTimerTest {
     }
 
     @Test
-    public void testSwitchBetweenCases() throws InterruptedException {
-        timer.startTimer(2);
-        Thread.sleep(1000);
+    public void testSwitchBetweenCases() {
+        TempCollection.init();
+        assertEquals(timer.getState(), PomodoroTimer.State.Pomodoro);
+        timer.switchBetweenCases();
+        assertEquals(1, timer.getPomodoroCounter());
+
+        assertEquals(timer.getState(), PomodoroTimer.State.ShortBreak);
+        timer.switchBetweenCases();
+
+        assertEquals(timer.getState(), PomodoroTimer.State.Pomodoro);
+        timer.switchBetweenCases();
+        assertEquals(2, timer.getPomodoroCounter());
+
+        timer.switchBetweenCases();
+        timer.switchBetweenCases();
+        timer.switchBetweenCases();
+        timer.switchBetweenCases();
+        assertEquals(0, timer.getPomodoroCounter());
+        assertEquals(timer.getState(), PomodoroTimer.State.LongBreak);
+
+
+
+
+
     }
 
 }

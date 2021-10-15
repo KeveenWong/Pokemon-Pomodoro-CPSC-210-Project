@@ -9,6 +9,7 @@ public class TempCollection {
 
     private static List<Pokemon> tempCollection;
 
+    // EFFECTS: initializes tempCollection
     public static void init() {
         tempCollection = new LinkedList<>();
     }
@@ -17,10 +18,13 @@ public class TempCollection {
         return tempCollection;
     }
 
+    // MODIFIES: tempCollection
+    // EFFECTS: adds given Pokemon to tempCollection
     public static void addPokemonToTemporaryCollection(Pokemon pokemon) {
         tempCollection.add(pokemon);
     }
 
+    // EFFECTS: if tempCollection is empty, do nothing. else, print out list of Pokemon names in tempCollection
     public static void printTempCollection() {
         if (!(tempCollection.isEmpty())) {
             System.out.println("You have Pokémon waiting to be added to your collection!");
@@ -31,6 +35,7 @@ public class TempCollection {
         }
     }
 
+    // EFFECTS: clears tempCollection
     public static void resetTemp() {
         tempCollection.clear();
     }

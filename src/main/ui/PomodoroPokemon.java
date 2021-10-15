@@ -4,15 +4,19 @@ import model.*;
 
 import java.util.Scanner;
 
+// Pokemon Pomodoro application
 public class PomodoroPokemon {
     private Scanner input;
     private PomodoroTimer timer;
     private Pokemon pokemon;
 
+    // EFFECTS: runs the pomodoro application
     public PomodoroPokemon() {
         runPomodoroApp();
     }
 
+    // MODIFIES: this
+    // EFFECTS: initializes timer, input, collections
     private void initialize() {
         timer = new PomodoroTimer();
         input = new Scanner(System.in);
@@ -20,6 +24,7 @@ public class PomodoroPokemon {
         PokemonCollection.init();
     }
 
+    // EFFECTS: displays menu of options to user
     private void displayMenu() {
         System.out.println("\nSelect from:");
         System.out.println("\tt -> Pomodoro Timer");
@@ -27,6 +32,8 @@ public class PomodoroPokemon {
         System.out.println("\tq -> Quit");
     }
 
+    // MODIFIES: this
+    // EFFECTS: processes user input
     private void runPomodoroApp() {
         boolean keepGoing = true;
         String command;
@@ -47,6 +54,8 @@ public class PomodoroPokemon {
         System.out.println("\nSee you next time!");
     }
 
+    // MODIFIES: this
+    // EFFECTS: processes user command
     private void processCommand(String command) {
         if (command.equals("t")) {
             beginTimer();
@@ -57,6 +66,8 @@ public class PomodoroPokemon {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: processes user command in Timer option
     private void processTimerCommand() {
 
         while (true) {
@@ -89,6 +100,7 @@ public class PomodoroPokemon {
         }
     }
 
+    // EFFECTS: exits timer option and allows user to select Pokemon if available
     private void exitAndDoSelection() {
         timer.exitTimer();
         TempCollection.printTempCollection();
@@ -96,6 +108,8 @@ public class PomodoroPokemon {
         TempCollection.resetTemp();
     }
 
+    // MODIFIES: this
+    // EFFECTS: processes user command in collection option
     private void processCollectionCommand() {
         String selection = ""; // force entry into loop
 
@@ -108,6 +122,7 @@ public class PomodoroPokemon {
         }
     }
 
+    // EFFECTS: starts timer at initial values and displays menu options
     private void beginTimer() {
         timer.startTimer(timer.getPomodoroLength());
         System.out.println("p for pause");
@@ -117,6 +132,8 @@ public class PomodoroPokemon {
         processTimerCommand();
     }
 
+    // MODIFIES: this
+    // EFFECTS: prints all Pokemon in PokemonCollection and displays menu option
     private void openCollection() {
         System.out.println("Your Pokemon Collection:");
         PokemonCollection.printCollection();
@@ -124,6 +141,8 @@ public class PomodoroPokemon {
         processCollectionCommand();
     }
 
+    // MODIFIES: PokemonCollection
+    // EFFECTS: prompts user to select which Pokemon they would like to add to PokemonCollection
     private void pokemonSelection() {
 
         for (Pokemon pokemon : TempCollection.getTempCollection()) {

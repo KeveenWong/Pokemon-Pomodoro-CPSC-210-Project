@@ -10,6 +10,9 @@ import java.util.List;
 public class AllPokemonList {
     public static final List<String> pokemonList;
 
+    // REQUIRES: file to read
+    // MODIFIES: pokemonList
+    // EFFECTS: creates a list of all Pokemon names from provided text file
     static {
         List<String> temp;
         try {
@@ -21,5 +24,6 @@ public class AllPokemonList {
         String pokemonString = temp.get(0);
         pokemonList = Arrays.asList(pokemonString.split(","));
     }
+
 
 }

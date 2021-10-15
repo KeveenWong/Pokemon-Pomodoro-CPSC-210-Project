@@ -8,6 +8,7 @@ public class PokemonCollection {
 
     private static List<Pokemon> collection;
 
+    // EFFECTS: initializes collection
     public static void init() {
         collection = new LinkedList<>();
     }
@@ -16,6 +17,7 @@ public class PokemonCollection {
         return collection;
     }
 
+    // EFFECTS: prints each name of Pokemon in collection list
     public static void printCollection() {
         for (Pokemon pokemon : collection) {
             System.out.println(pokemon.getPokemonName());
@@ -23,6 +25,8 @@ public class PokemonCollection {
 
     }
 
+    // MODIFIES: collection
+    // EFFECTS: adds given Pokemon to collection list
     public static void addPokemonToCollection(Pokemon pokemon) {
         collection.add(pokemon);
     }
