@@ -14,7 +14,7 @@ class PomodoroTimerTest {
     }
 
     @Test
-    void testStartTimer() throws InterruptedException {
+    public void testStartTimer() throws InterruptedException {
         timer.startTimer(600);
         assertEquals(600, timer.getRemainingTime());
         Thread.sleep(1100);
@@ -23,9 +23,9 @@ class PomodoroTimerTest {
     }
 
     @Test
-    void testTickRemainingTime() throws InterruptedException {
+    public void testTickRemainingTime() throws InterruptedException {
         timer.startTimer(65);
-        timer.tickRemainingTime();
+      //  timer.tickRemainingTime();
         Thread.sleep(3100);
         assertEquals(3, timer.getSecondCounter());
         Thread.sleep(5100);
@@ -40,7 +40,7 @@ class PomodoroTimerTest {
     }
 
     @Test
-    void testPauseTimer() throws InterruptedException {
+    public void testPauseTimer() throws InterruptedException {
         timer.startTimer(5);
         Thread.sleep(1100);
         assertEquals(4, timer.getRemainingTime());
@@ -50,7 +50,7 @@ class PomodoroTimerTest {
     }
 
     @Test
-    void testUnpauseTimer() throws InterruptedException {
+    public void testUnpauseTimer() throws InterruptedException {
         timer.startTimer(5);
         Thread.sleep(1100);
         assertEquals(4, timer.getRemainingTime());
@@ -63,7 +63,7 @@ class PomodoroTimerTest {
     }
 
     @Test
-    void testResetTimer() {
+    public void testResetTimer() {
         timer.startTimer(10);
         timer.resetTimer();
         assertEquals(timer.getPomodoroLength(), timer.getRemainingTime());
@@ -72,19 +72,19 @@ class PomodoroTimerTest {
     }
 
     @Test
-    void testExitTimer() {
+    public void testExitTimer() {
         timer.startTimer(10);
         timer.exitTimer();
         assertEquals(10, timer.getRemainingTime());
     }
 
     @Test
-    void testGetState() {
+    public void testGetState() {
         assertEquals(PomodoroTimer.State.Pomodoro, timer.getState());
     }
 
     @Test
-    void testSwitchBetweenCases() throws InterruptedException {
+    public void testSwitchBetweenCases() throws InterruptedException {
         timer.startTimer(2);
         Thread.sleep(1000);
     }

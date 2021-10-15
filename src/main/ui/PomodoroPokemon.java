@@ -60,40 +60,36 @@ public class PomodoroPokemon {
     private void processTimerCommand() {
 
         while (true) {
-            String select = ""; // force entry into loop
+            String selection = ""; // force entry into loop
 
-            while (!(select.equals("u") || select.equals("p") || select.equals("r") || select.equals("e"))) {
-                select = input.next();
-                select = select.toLowerCase();
+            while (!(selection.equals("u") || selection.equals("p") || selection.equals("r") || selection.equals("e"))) {
+                selection = input.next();
+                selection = selection.toLowerCase();
             }
 
-            if (select.equals("u")) {
+            if (selection.equals("u")) {
                 if (!timer.getPaused()) {
                     continue;
                 }
                 timer.unpauseTimer();
 
-            } else if (select.equals("p")) {
+            } else if (selection.equals("p")) {
                 if (timer.getPaused()) {
                     continue;
                 }
                 timer.pauseTimer();
 
-            } else if (select.equals("r")) {
+            } else if (selection.equals("r")) {
                 timer.resetTimer();
 
             } else {
-                exitAndDoPokemonSelection();
+                timer.exitTimer();
+                TempCollection.printTempCollection();
+                pokemonSelection();
+                TempCollection.resetTemp();
                 return;
             }
         }
-    }
-
-    private void exitAndDoPokemonSelection() {
-        timer.exitTimer();
-        TempCollection.printTempCollection();
-        pokemonSelection();
-        TempCollection.resetTemp();
     }
 
     private void processCollectionCommand() {
