@@ -23,7 +23,6 @@ public class PomodoroTimer {
     private boolean paused = true;
     private int remainingTime;                // remaining time in timer
     private int pomodoroCounter;                      // tracks number of fully complete Pomodoros
-    private int secondCounter;
 
     // Getter methods
     public Integer getPomodoroLength() {
@@ -36,10 +35,6 @@ public class PomodoroTimer {
 
     public Boolean getPaused() {
         return paused;
-    }
-
-    public Integer getSecondCounter() {
-        return secondCounter;
     }
 
     public State getState() {
@@ -113,7 +108,6 @@ public class PomodoroTimer {
             startTicking();
         }
         remainingTime--;
-        secondCounter++;
     }
 
     public void pauseTimer() {
