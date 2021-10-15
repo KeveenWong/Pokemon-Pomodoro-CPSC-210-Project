@@ -25,6 +25,6 @@ public class AllPokemonList {
         String pokemonString = temp.get(0);
         pokemonList = Arrays.asList(pokemonString.split(","));
     }
-
+// NOTE: this method(?) is impossible to test I think so I could not cover it properly
 
 }

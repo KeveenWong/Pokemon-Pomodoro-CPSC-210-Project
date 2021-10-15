@@ -19,6 +19,7 @@ public class Pokemon {
     // REQUIRES: list must not be empty
     // MODIFIES: this
     // EFFECTS: Generates random index and prints/returns element at that index in list
+    // NOTE: since this uses random it is a bit challenging/odd to do a test for
     public static Pokemon getRandomPokemon() {
         int index = (int) (Math.random() * AllPokemonList.pokemonList.size());
         String name = AllPokemonList.pokemonList.get(index);

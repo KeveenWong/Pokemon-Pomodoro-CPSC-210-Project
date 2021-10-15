@@ -16,6 +16,8 @@ public class PokemonTest {
     }
 
     @Test
+    // NOTE: since this uses random it is a bit challenging/odd to do a test for so I just printed a bunch of random
+    // pokemon to make sure it was working consistently.
     public void testGetRandomPokemon() {
         for (int i = 0; i < 1000; i++) {
             Pokemon.getRandomPokemon();
