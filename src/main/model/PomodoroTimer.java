@@ -72,19 +72,19 @@ public class PomodoroTimer {
     }
 
     // EFFECTS: swaps between cases
-    public int switchBetweenCases() throws NullPointerException {
+    public void switchBetweenCases() throws NullPointerException {
         switch (state) {
             case Pomodoro:
                 pomodoroFinish();
-                return 1;
+                break;
             case ShortBreak:
                 shortBreakFinish();
-                return 2;
+                break;
             case LongBreak:
                 longBreakFinish();
-                return 3;
+                break;
         }
-        return 0;
+
     }
 
     // MODIFIES: this, TempCollection
