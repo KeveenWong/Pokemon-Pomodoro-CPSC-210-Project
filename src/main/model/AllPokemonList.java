@@ -7,11 +7,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+// A list of over 800 Pokemon
 public class AllPokemonList {
     public static final List<String> pokemonList;
 
     // REQUIRES: file to read
-    // MODIFIES: pokemonList
+    // MODIFIES: this
     // EFFECTS: creates a list of all Pokemon names from provided text file
     static {
         List<String> temp;

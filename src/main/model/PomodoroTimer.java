@@ -5,7 +5,7 @@ import java.util.Timer;
 
 import static java.lang.Math.round;
 
-
+// Pomodoro Timer with study (Pomodoro) timer, short break, and long break
 public class PomodoroTimer {
     public enum State {
         Pomodoro,
@@ -15,14 +15,14 @@ public class PomodoroTimer {
 
     private State state = State.Pomodoro;
     private Timer timer;
-    private static int pomodoroLength = 5;  // standard Pomodoro Length is 25 minutes
-    private static int shortBreak = 3;      // standard break length is 5 minutes
-    private static int longBreak = 4;       // after 4 Pomodoros, break is 15 minutes
+    private static int pomodoroLength = 5;  // standard Pomodoro Length is 25 minutes, SHORTENED to 5 seconds for tests
+    private static int shortBreak = 3;      // standard break length is 5 minutes, SHORTENED to 3 seconds for testing
+    private static int longBreak = 4;       // after 4 Pomodoros, break is 15 minutes, SHORTENED to 4 seconds for tests
     private static int delay = 1000;
     private static int period = 1000;
     private boolean paused = true;
-    private int remainingTime;                // remaining time in timer
-    private int pomodoroCounter;                      // tracks number of fully complete Pomodoros
+    private int remainingTime;              // remaining time in timer
+    private int pomodoroCounter;            // tracks number of fully complete Pomodoros
 
     // Getter methods
     public Integer getPomodoroLength() {
@@ -46,14 +46,14 @@ public class PomodoroTimer {
     }
 
     // REQUIRES: initialTime > 0
-    // MODIFIES: this, paused, remainingTime
+    // MODIFIES: this
     // EFFECTS: prints starting time, sets paused to false, sets remainingTime to initialTime, and begins timer tick
     public void startTimer(int initialTime) {
         state = State.Pomodoro;
         System.out.print("Starting Pomodoro! ");
         paused = false;
         System.out.print(initialTime);
-        System.out.println(" minutes remaining!");
+        System.out.println(" seconds remaining!");
         remainingTime = initialTime;
         startTicking();
     }
@@ -86,7 +86,7 @@ public class PomodoroTimer {
         }
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, TempCollection
     // EFFECTS: adds random pokemon to collection once complete, and checks if next break is long, else short
     private void pomodoroFinish() {
         System.out.println("Pomodoro timer complete.");
@@ -121,7 +121,7 @@ public class PomodoroTimer {
         remainingTime = pomodoroLength;
     }
 
-    // MODIFIES: this, TempCollection
+    // MODIFIES: this
     // EFFECTS: Changes and resets timer accordingly once remainingTime finishes (reaches 1). Otherwise, tick timer once
     private void tickRemainingTime() throws NullPointerException {
         if (remainingTime == 1) {
@@ -144,7 +144,7 @@ public class PomodoroTimer {
     // EFFECTS: un-pauses timer by setting paused = false
     public void unpauseTimer() {
         paused = false;
-        System.out.println("Un-paused timer! " + (round(remainingTime)) + " minutes remaining!");
+        System.out.println("Un-paused timer! " + (round(remainingTime)) + " seconds remaining!");
         startTicking();
     }
 

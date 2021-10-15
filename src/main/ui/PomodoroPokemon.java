@@ -66,7 +66,7 @@ public class PomodoroPokemon {
         }
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, PomodoroTimer
     // EFFECTS: processes user command in Timer option
     private void processTimerCommand() {
 
@@ -100,6 +100,7 @@ public class PomodoroPokemon {
         }
     }
 
+    // MODIFIES: timer, TempCollection
     // EFFECTS: exits timer option and allows user to select Pokemon if available
     private void exitAndDoSelection() {
         timer.exitTimer();
@@ -132,7 +133,6 @@ public class PomodoroPokemon {
         processTimerCommand();
     }
 
-    // MODIFIES: this
     // EFFECTS: prints all Pokemon in PokemonCollection and displays menu option
     private void openCollection() {
         System.out.println("Your Pokemon Collection:");
@@ -141,7 +141,7 @@ public class PomodoroPokemon {
         processCollectionCommand();
     }
 
-    // MODIFIES: PokemonCollection
+    // MODIFIES: this, PokemonCollection
     // EFFECTS: prompts user to select which Pokemon they would like to add to PokemonCollection
     private void pokemonSelection() {
 

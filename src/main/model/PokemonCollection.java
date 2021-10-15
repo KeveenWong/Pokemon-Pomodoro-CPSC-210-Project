@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+// Represents the user's actual Pokemon collection
 public class PokemonCollection {
 
     private static List<Pokemon> collection;
@@ -30,7 +31,7 @@ public class PokemonCollection {
 
     }
 
-    // MODIFIES: collection
+    // MODIFIES: PokemonCollection
     // EFFECTS: adds given Pokemon to collection list
     public static void addPokemonToCollection(Pokemon pokemon) {
         collection.add(pokemon);

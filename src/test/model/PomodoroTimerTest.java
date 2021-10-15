@@ -25,6 +25,12 @@ class PomodoroTimerTest {
 
     @Test
     public void testTickRemainingTime() throws InterruptedException {
+        TempCollection.init();
+        timer.startTimer(3);
+        Thread.sleep(3100);
+        assertEquals(timer.getState(), PomodoroTimer.State.ShortBreak);
+        timer.switchBetweenCases();
+        assertEquals(timer.getState(), PomodoroTimer.State.Pomodoro);
 
     }
 
@@ -101,6 +107,8 @@ class PomodoroTimerTest {
         timer.startTimer(5);
         Thread.sleep(5100);
         assertEquals(timer.getState(), PomodoroTimer.State.ShortBreak);
+        assertEquals(1, timer.getPomodoroCounter());
+        assertEquals(3, timer.getRemainingTime(), DELTA);
 
     }
 
@@ -113,6 +121,7 @@ class PomodoroTimerTest {
         Thread.sleep(2100);
         // start Pomodoro
         assertEquals(timer.getState(), PomodoroTimer.State.Pomodoro);
+        assertEquals(5, timer.getRemainingTime(), DELTA);
     }
 
     @Test
@@ -139,6 +148,7 @@ class PomodoroTimerTest {
         // 4 pomodoro
         // start long break
         assertEquals(timer.getState(), PomodoroTimer.State.LongBreak);
+        assertEquals(4, timer.getRemainingTime(), DELTA);
     }
 
 }

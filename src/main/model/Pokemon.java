@@ -1,5 +1,6 @@
 package model;
 
+// Represents a Pokemon with its actual name and a given name (latter not yet implemented)
 public class Pokemon {
     private String actualName;
     private String givenName;

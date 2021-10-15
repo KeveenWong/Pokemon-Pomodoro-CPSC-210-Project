@@ -25,7 +25,6 @@ public class PokemonTest {
     @Test
     public void testPrintTempCollectionEmpty() {
         TempCollection.init();
-        TempCollection.printTempCollection();
         assertFalse(TempCollection.printTempCollection());
     }
 
@@ -68,7 +67,13 @@ public class PokemonTest {
     }
 
     @Test
-    public void testPrintCollection() {
+    public void testPrintCollectionEmpty() {
+        PokemonCollection.init();
+        assertFalse(PokemonCollection.printCollection());
+    }
+
+    @Test
+    public void testPrintCollectionNotEmpty() {
         Pokemon pokemon1 = new Pokemon("test1", "");
         Pokemon pokemon2 = new Pokemon("test2", "");
 

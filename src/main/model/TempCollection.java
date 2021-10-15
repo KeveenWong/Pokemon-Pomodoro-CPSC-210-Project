@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+// Temporary Pokemon collection to store Pokemon obtained from Pomodoro timer
 public class TempCollection {
 
     private static List<Pokemon> tempCollection;
@@ -41,6 +42,7 @@ public class TempCollection {
         return false;
     }
 
+    // MODIFIES: this
     // EFFECTS: clears tempCollection
     public static void resetTemp() {
         tempCollection.clear();
