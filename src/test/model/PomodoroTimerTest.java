@@ -14,74 +14,50 @@ class PomodoroTimerTest {
     }
 
     @Test
-    void testStartTimer() {
+    void testStartTimer() throws InterruptedException {
         timer.startTimer(600);
         assertEquals(600, timer.getRemainingTime());
-        try
-        {
-            Thread.sleep(1100);
-        }
-        catch(InterruptedException ex)
-        {
-            Thread.currentThread().interrupt();
-        }
+        Thread.sleep(1100);
         assertEquals(599, timer.getRemainingTime());
         assertEquals(1, timer.getSecondCounter());
     }
 
     @Test
-    void testTickRemainingTime() {
-        timer.startTimer(2);
+    void testTickRemainingTime() throws InterruptedException {
+        timer.startTimer(65);
         timer.tickRemainingTime();
-        assertEquals(1, timer.getRemainingTime());
-        timer.tickRemainingTime();
+        Thread.sleep(3100);
+        assertEquals(3, timer.getSecondCounter());
+        Thread.sleep(5100);
+        assertEquals(8, timer.getSecondCounter());
+        Thread.sleep(51100);
+        assertEquals(59, timer.getSecondCounter());
+        Thread.sleep(1100);
+        assertEquals(1, timer.getSecondCounter());
+        Thread.sleep(4100);
         assertEquals(timer.getState(), PomodoroTimer.State.ShortBreak);
-        assertEquals(timer.getShortBreak(), timer.getRemainingTime());
+        assertEquals(300, timer.getRemainingTime());
     }
 
     @Test
-    void testPauseTimer() {
+    void testPauseTimer() throws InterruptedException {
         timer.startTimer(5);
-        try
-        {
-            Thread.sleep(1100);
-        }
-        catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+        Thread.sleep(1100);
         assertEquals(4, timer.getRemainingTime());
         timer.pauseTimer();
-        try
-        {
-            Thread.sleep(5000);
-        }
-        catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+        Thread.sleep(5000);
         assertEquals(4, timer.getRemainingTime());
     }
 
     @Test
-    void testUnpauseTimer() {
+    void testUnpauseTimer() throws InterruptedException {
         timer.startTimer(5);
-        try {
-            Thread.sleep(1100);
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+        Thread.sleep(1100);
         assertEquals(4, timer.getRemainingTime());
         timer.pauseTimer();
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+        Thread.sleep(2000);
         timer.unpauseTimer();
-        try {
-            Thread.sleep(3100);
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+        Thread.sleep(3100);
         assertEquals(1, timer.getRemainingTime());
 
     }
@@ -90,7 +66,27 @@ class PomodoroTimerTest {
     void testResetTimer() {
         timer.startTimer(10);
         timer.resetTimer();
-        assertEquals(1500, timer.getRemainingTime());
+        assertEquals(timer.getPomodoroLength(), timer.getRemainingTime());
+        timer.pauseTimer();
+        assertTrue(timer.getPaused());
+    }
+
+    @Test
+    void testExitTimer() {
+        timer.startTimer(10);
+        timer.exitTimer();
+        assertEquals(10, timer.getRemainingTime());
+    }
+
+    @Test
+    void testGetState() {
+        assertEquals(PomodoroTimer.State.Pomodoro, timer.getState());
+    }
+
+    @Test
+    void testSwitchBetweenCases() throws InterruptedException {
+        timer.startTimer(2);
+        Thread.sleep(1000);
     }
 
 }
