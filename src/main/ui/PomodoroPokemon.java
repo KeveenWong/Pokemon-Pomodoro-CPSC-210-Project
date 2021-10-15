@@ -1,12 +1,13 @@
 package ui;
 
-import model.PomodoroTimer;
+import model.*;
 
 import java.util.Scanner;
 
 public class PomodoroPokemon {
     private Scanner input;
     private PomodoroTimer timer;
+    private Pokemon pokemon;
 
     public PomodoroPokemon() {
         runPomodoroApp();
@@ -15,12 +16,15 @@ public class PomodoroPokemon {
     private void initialize() {
         timer = new PomodoroTimer();
         input = new Scanner(System.in);
+        TempCollection.init();
+        PokemonCollection.init();
     }
 
     private void displayMenu() {
         System.out.println("\nSelect from:");
         System.out.println("\tt -> Pomodoro Timer");
-        System.out.println("\tq -> quit");
+        System.out.println("\tc -> Collection");
+        System.out.println("\tq -> Quit");
     }
 
     private void runPomodoroApp() {
@@ -46,40 +50,58 @@ public class PomodoroPokemon {
     private void processCommand(String command) {
         if (command.equals("t")) {
             beginTimer();
+        } else if (command.equals("c")) {
+            openCollection();
         } else {
             System.out.println("Selection not valid...");
         }
     }
 
     private void processTimerCommand() {
+
+        while (true) {
+            String selection = ""; // force entry into loop
+
+            while (!(selection.equals("u") || selection.equals("p") || selection.equals("r") || selection.equals("e"))) {
+                selection = input.next();
+                selection = selection.toLowerCase();
+            }
+
+            if (selection.equals("u")) {
+                if (!timer.getPaused()) {
+                    continue;
+                }
+                timer.unpauseTimer();
+
+            } else if (selection.equals("p")) {
+                if (timer.getPaused()) {
+                    continue;
+                }
+                timer.pauseTimer();
+
+            } else if (selection.equals("r")) {
+                timer.resetTimer();
+
+            } else {
+                timer.exitTimer();
+                TempCollection.printTempCollection();
+                pokemonSelection();
+                TempCollection.resetTemp();
+                return;
+            }
+        }
+    }
+
+    private void processCollectionCommand() {
         String selection = ""; // force entry into loop
 
-        while (!(selection.equals("u") || selection.equals("p") || selection.equals("r") || selection.equals("e"))) {
+        while (!(selection.equals("e"))) {
             selection = input.next();
             selection = selection.toLowerCase();
         }
-
-        if (selection.equals("u")) {
-            if (!timer.getPaused()) {
-                processTimerCommand();
-            }
-            timer.unpauseTimer();
-
-        } else if (selection.equals("p")) {
-            if (timer.getPaused()) {
-                processTimerCommand();
-            }
-            timer.pauseTimer();
-
-        } else if (selection.equals("r")) {
-            timer.resetTimer();
-
-        } else {
-            timer.exitTimer();
-            return;
+        if (selection.equals("e")) {
+            System.out.println("Goodbye!");
         }
-
-        processTimerCommand();
     }
 
     private void beginTimer() {
@@ -89,6 +111,36 @@ public class PomodoroPokemon {
         System.out.println("r for reset");
         System.out.println("e for exit");
         processTimerCommand();
+    }
+
+    private void openCollection() {
+        System.out.println("Your Pokemon Collection:");
+        PokemonCollection.printCollection();
+        System.out.println("e for exit");
+        processCollectionCommand();
+    }
+
+    private void pokemonSelection() {
+
+        for (Pokemon pokemon : TempCollection.getTempCollection()) {
+            String selection = "";
+            System.out.println("Would you like to keep" + pokemon.getPokemonName() + "? (y/n)");
+
+            while (!(selection.equals("y") || selection.equals("n"))) {
+                selection = input.next();
+                selection = selection.toLowerCase();
+            }
+
+            if (selection.equals("y")) {
+                PokemonCollection.addPokemonToCollection(pokemon);
+                System.out.println(pokemon.getPokemonName() + " added to collection.");
+            }
+
+            if (selection.equals("n")) {
+                System.out.println(pokemon.getPokemonName() + " was released.");
+            }
+
+        }
     }
 }
 

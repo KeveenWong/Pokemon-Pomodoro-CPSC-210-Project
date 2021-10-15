@@ -18,11 +18,11 @@ public class PomodoroTimer {
     private static int pomodoroLength = 1500;  // standard Pomodoro Length is 25 minutes
     private static int shortBreak = 300;      // standard break length is 5 minutes
     private static int longBreak = 900;       // after 4 Pomodoros, break is 15 minutes
-    private static int delay = 1000;
-    private static int period = 1000;
+    private static int delay = 1;
+    private static int period = 1;
     private boolean paused = true;
     private int remainingTime;                // remaining time in timer
-    private int counter;                      // tracks number of fully complete Pomodoros
+    private int pomodoroCounter;                      // tracks number of fully complete Pomodoros
     private int secondCounter;
 
     // Getter methods
@@ -36,6 +36,10 @@ public class PomodoroTimer {
 
     public Boolean getPaused() {
         return paused;
+    }
+
+    public Integer getSecondCounter() {
+        return secondCounter;
     }
 
     // REQUIRES:
@@ -66,17 +70,13 @@ public class PomodoroTimer {
     }
 
 
-    private void switchBetweenCases() {
+    public void switchBetweenCases() {
         switch (state) {
             case Pomodoro:
-                if (counter == 4) {
-                    System.out.println("Pomodoro timer complete. Entering long break.");
-                    state = State.LongBreak;
-                    remainingTime = longBreak;
-                    counter = 0;
-                    break;
-                }
-                System.out.println("Pomodoro timer complete. Entering short break.");
+                System.out.println("Pomodoro timer complete.");
+                Pokemon pokemon = Pokemon.getRandomPokemon();
+                TempCollection.addPokemonToTemporaryCollection(pokemon);
+                System.out.println("Entering short break.");
                 remainingTime = shortBreak;
                 state = State.ShortBreak;
                 break;
@@ -84,19 +84,29 @@ public class PomodoroTimer {
                 System.out.println("Short break complete. Entering Pomodoro timer.");
                 remainingTime = pomodoroLength;
                 state = State.Pomodoro;
-                counter++;
                 break;
             case LongBreak:
                 System.out.println("Long break complete. Entering Pomodoro timer.");
                 state = State.Pomodoro;
                 remainingTime = pomodoroLength;
-                counter++;
                 break;
         }
     }
 
-    private final void tickRemainingTime() {
+    private void tickRemainingTime() {
         if (remainingTime == 1) {
+            if (state == State.ShortBreak || state == State.LongBreak) {
+                pomodoroCounter++;
+            } else if (pomodoroCounter == 4) {
+                System.out.println("Pomodoro timer complete.");
+                Pokemon pokemon = Pokemon.getRandomPokemon();
+                TempCollection.addPokemonToTemporaryCollection(pokemon);
+                System.out.println("Entering long break.");
+                state = State.LongBreak;
+                remainingTime = longBreak;
+                pomodoroCounter = 0;
+                return;
+            }
             switchBetweenCases();
             timer.cancel();
             startTicking();
@@ -113,9 +123,7 @@ public class PomodoroTimer {
 
     public void unpauseTimer() {
         paused = false;
-        System.out.println("Un-paused timer!");
-        System.out.print(round(remainingTime / 60));
-        System.out.println(" minutes remaining!");
+        System.out.println("Un-paused timer! " + (round(remainingTime / 60)) + " minutes remaining!");
         startTicking();
     }
 
@@ -131,9 +139,8 @@ public class PomodoroTimer {
         timer.cancel();
         System.out.println("Exiting timer. See you later!");
     }
-
-
 }
+
 
 
 
