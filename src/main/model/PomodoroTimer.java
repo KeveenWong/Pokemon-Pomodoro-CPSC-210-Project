@@ -15,11 +15,11 @@ public class PomodoroTimer {
 
     private State state = State.Pomodoro;
     private Timer timer;
-    private static int pomodoroLength = 1500;  // standard Pomodoro Length is 25 minutes
-    private static int shortBreak = 300;      // standard break length is 5 minutes
-    private static int longBreak = 900;       // after 4 Pomodoros, break is 15 minutes
-    private static int delay = 1;
-    private static int period = 1;
+    private static int pomodoroLength = 5;  // standard Pomodoro Length is 25 minutes
+    private static int shortBreak = 3;      // standard break length is 5 minutes
+    private static int longBreak = 4;       // after 4 Pomodoros, break is 15 minutes
+    private static int delay = 1000;
+    private static int period = 1000;
     private boolean paused = true;
     private int remainingTime;                // remaining time in timer
     private int pomodoroCounter;                      // tracks number of fully complete Pomodoros
@@ -53,7 +53,7 @@ public class PomodoroTimer {
         state = State.Pomodoro;
         System.out.print("Starting Pomodoro! ");
         paused = false;
-        System.out.print(initialTime / 60);
+        System.out.print(initialTime);
         System.out.println(" minutes remaining!");
         remainingTime = initialTime;
         startTicking();
@@ -65,10 +65,7 @@ public class PomodoroTimer {
 
             public void run() {
                 tickRemainingTime();
-                if (secondCounter == 60) {
-                    secondCounter = 0;
-                    System.out.println(round(remainingTime / 60));
-                }
+                System.out.println(round(remainingTime));
             }
         }, delay, period);
     }
@@ -127,7 +124,7 @@ public class PomodoroTimer {
 
     public void unpauseTimer() {
         paused = false;
-        System.out.println("Un-paused timer! " + (round(remainingTime / 60)) + " minutes remaining!");
+        System.out.println("Un-paused timer! " + (round(remainingTime)) + " minutes remaining!");
         startTicking();
     }
 
