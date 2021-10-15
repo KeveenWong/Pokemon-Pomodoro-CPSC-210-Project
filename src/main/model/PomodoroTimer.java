@@ -98,7 +98,6 @@ public class PomodoroTimer {
             state = State.LongBreak;
             remainingTime = longBreak;
             pomodoroCounter = 0;
-            return;
         } else {
             System.out.println("Entering short break.");
             remainingTime = shortBreak;
