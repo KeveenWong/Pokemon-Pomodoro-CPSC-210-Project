@@ -17,7 +17,8 @@ public class AllPokemonList {
     static {
         List<String> temp;
         try {
-            temp = Files.readAllLines(new File("pokemon.txt").toPath());
+            temp = Files.readAllLines(new File(
+                    "." + File.separator + "data" + File.separator + "pokemon.txt").toPath());
         } catch (IOException e) {
             temp = new ArrayList<>();
             e.printStackTrace();
