@@ -18,7 +18,6 @@ public class PomodoroTimer {
     private static int pomodoroLength = 5;  // standard Pomodoro Length is 25 minutes, SHORTENED to 5 seconds for tests
     private static int shortBreak = 3;      // standard break length is 5 minutes, SHORTENED to 3 seconds for testing
     private static int longBreak = 4;       // after 4 Pomodoros, break is 15 minutes, SHORTENED to 4 seconds for tests
-    private static int delay = 1000;
     private static int period = 1000;
     private boolean paused = true;
     private int remainingTime;              // remaining time in timer
@@ -65,26 +64,21 @@ public class PomodoroTimer {
         timer.scheduleAtFixedRate(new TimerTask() {
 
             public void run() {
-                tickRemainingTime();
                 System.out.println(round(remainingTime));
+                tickRemainingTime();
             }
-        }, delay, period);
+        }, 0, period);
     }
 
     // EFFECTS: swaps between cases
     public void switchBetweenCases() throws NullPointerException {
-        switch (state) {
-            case Pomodoro:
-                pomodoroFinish();
-                break;
-            case ShortBreak:
-                shortBreakFinish();
-                break;
-            case LongBreak:
-                longBreakFinish();
-                break;
+        if (state == State.Pomodoro) {
+            pomodoroFinish();
+        } else if (state == State.ShortBreak) {
+            shortBreakFinish();
+        } else if (state == State.LongBreak) {
+            longBreakFinish();
         }
-
     }
 
     // MODIFIES: this, TempCollection
@@ -125,12 +119,14 @@ public class PomodoroTimer {
     // MODIFIES: this
     // EFFECTS: Changes and resets timer accordingly once remainingTime finishes (reaches 1). Otherwise, tick timer once
     private void tickRemainingTime() throws NullPointerException {
-        if (remainingTime == 1) {
+        if (remainingTime == 0) {
             switchBetweenCases();
             timer.cancel();
+            timer.purge();
             startTicking();
+        } else {
+            remainingTime--;
         }
-        remainingTime--;
     }
 
     // MODIFIES: this

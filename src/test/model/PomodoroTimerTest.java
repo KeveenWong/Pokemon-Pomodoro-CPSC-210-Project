@@ -20,7 +20,7 @@ class PomodoroTimerTest {
         timer.startTimer(5);
         assertEquals(5, timer.getRemainingTime());
         Thread.sleep(1100);
-        assertEquals(4, timer.getRemainingTime());
+        assertEquals(4, timer.getRemainingTime(), DELTA);
     }
 
     @Test
@@ -118,7 +118,7 @@ class PomodoroTimerTest {
         timer.startTimer(5);
         Thread.sleep(5100);
         // start short break
-        Thread.sleep(2100);
+        Thread.sleep(3100);
         // start Pomodoro
         assertEquals(timer.getState(), PomodoroTimer.State.Pomodoro);
         assertEquals(5, timer.getRemainingTime(), DELTA);
@@ -131,20 +131,20 @@ class PomodoroTimerTest {
         Thread.sleep(5100);
         // 1 pomodoro
         // start short break
-        Thread.sleep(2100);
+        Thread.sleep(3100);
         // start Pomodoro
         assertEquals(timer.getState(), PomodoroTimer.State.Pomodoro);
-        Thread.sleep(4100);
+        Thread.sleep(5100);
         // 2 pomodoro
         // start short break
-        Thread.sleep(2100);
+        Thread.sleep(3100);
         // start Pomodoro
-        Thread.sleep(4100);
+        Thread.sleep(5100);
         // 3 pomodoro
         // start short break
-        Thread.sleep(2100);
+        Thread.sleep(3100);
         // start Pomodoro
-        Thread.sleep(4100);
+        Thread.sleep(5100);
         // 4 pomodoro
         // start long break
         assertEquals(timer.getState(), PomodoroTimer.State.LongBreak);
