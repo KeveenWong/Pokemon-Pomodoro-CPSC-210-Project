@@ -14,6 +14,7 @@ class PomodoroTimerTest {
     public void runBefore() {
         timer = new PomodoroTimer();
     }
+
     private static final int DELTA = 1;
 
 
@@ -26,7 +27,7 @@ class PomodoroTimerTest {
     }
 
     @Test
-    public void testTickRemainingTime() throws InterruptedException {
+    public void testTickRemainingTime() throws InterruptedException, IOException {
         TempCollection.init();
         timer.startTimer(3);
         Thread.sleep(3100);
@@ -84,7 +85,7 @@ class PomodoroTimerTest {
     }
 
     @Test
-    public void testSwitchBetweenCases() {
+    public void testSwitchBetweenCases() throws IOException {
         TempCollection.init();
         assertEquals(timer.getState(), PomodoroTimer.State.Pomodoro);
         timer.switchBetweenCases();
@@ -156,4 +157,14 @@ class PomodoroTimerTest {
         assertEquals(4, timer.getRemainingTime(), DELTA);
     }
 
+    @Test
+    public void testPomodoroFinishFail() {
+        try {
+            timer.pomodoroFinish("test");
+        } catch (IOException e) {
+            System.out.println("pokemonList was not read correctly. Continuing program.");
+            // expected behaviour
+        }
+
+    }
 }

@@ -66,15 +66,19 @@ public class PomodoroTimer {
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 System.out.println(round(remainingTime));
-                tickRemainingTime();
+                try {
+                    tickRemainingTime();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }, 0, period);
     }
 
     // EFFECTS: swaps between cases
-    public void switchBetweenCases() throws NullPointerException {
+    public void switchBetweenCases() throws NullPointerException, IOException {
         if (state == State.Pomodoro) {
-            pomodoroFinish();
+            pomodoroFinish("pokemon.txt");
         } else if (state == State.ShortBreak) {
             shortBreakFinish();
         } else if (state == State.LongBreak) {
@@ -84,15 +88,10 @@ public class PomodoroTimer {
 
     // MODIFIES: this, TempCollection
     // EFFECTS: adds random pokemon to collection once complete, and checks if next break is long, else short
-    private void pomodoroFinish() {
+    public void pomodoroFinish(String filename) throws IOException {
         System.out.println("Pomodoro timer complete.");
-        Pokemon pokemon = null;
-        try {
-            pokemon = Pokemon.getRandomPokemon("pokemon.txt");
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("pokemonList was not read correctly. Continuing program.");
-        }
+        Pokemon pokemon;
+        pokemon = Pokemon.getRandomPokemon(filename);
         TempCollection.addPokemonToTemporaryCollection(pokemon);
         pomodoroCounter++;
         if (pomodoroCounter == 4) {
@@ -125,7 +124,7 @@ public class PomodoroTimer {
 
     // MODIFIES: this
     // EFFECTS: Changes and resets timer accordingly once remainingTime finishes (reaches 1). Else, tick timer once
-    private void tickRemainingTime() throws NullPointerException {
+    private void tickRemainingTime() throws NullPointerException, IOException {
         if (remainingTime == 0) {
             switchBetweenCases();
             timer.cancel();

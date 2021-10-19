@@ -8,7 +8,7 @@ import java.util.List;
 // Temporary Pokemon collection to store Pokemon obtained from Pomodoro timer
 public final class TempCollection {
 
-    public TempCollection() {
+    private TempCollection() {
         // constructor to make Jacoco happy
     }
 
