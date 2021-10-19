@@ -1,9 +1,13 @@
 package model;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+
+import java.io.IOException;
 import java.util.TimerTask;
 import java.util.Timer;
 
 import static java.lang.Math.round;
+import static org.junit.jupiter.api.Assertions.fail;
 
 // Pomodoro Timer with study (Pomodoro) timer, short break, and long break
 public class PomodoroTimer {
@@ -58,11 +62,10 @@ public class PomodoroTimer {
     }
 
     // MODIFIES: this
-    // EFFECTS: Creates Timer and begins ticking once per second after a 1-second initial delay
+    // EFFECTS: Creates Timer and begins ticking once per second without delay
     private void startTicking() {
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
-
             public void run() {
                 System.out.println(round(remainingTime));
                 tickRemainingTime();
@@ -85,7 +88,13 @@ public class PomodoroTimer {
     // EFFECTS: adds random pokemon to collection once complete, and checks if next break is long, else short
     private void pomodoroFinish() {
         System.out.println("Pomodoro timer complete.");
-        Pokemon pokemon = Pokemon.getRandomPokemon();
+        Pokemon pokemon = null;
+        try {
+            pokemon = Pokemon.getRandomPokemon("pokemon.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("pokemonList was not read correctly. Continuing program.");
+        }
         TempCollection.addPokemonToTemporaryCollection(pokemon);
         pomodoroCounter++;
         if (pomodoroCounter == 4) {
@@ -117,7 +126,7 @@ public class PomodoroTimer {
     }
 
     // MODIFIES: this
-    // EFFECTS: Changes and resets timer accordingly once remainingTime finishes (reaches 1). Otherwise, tick timer once
+    // EFFECTS: Changes and resets timer accordingly once remainingTime finishes (reaches 1). Else, tick timer once
     private void tickRemainingTime() throws NullPointerException {
         if (remainingTime == 0) {
             switchBetweenCases();

@@ -9,23 +9,14 @@ import java.util.List;
 
 // A list of over 800 Pokemon
 public class AllPokemonList {
-    public static final List<String> pokemonList;
+    public final List<String> pokemonList;
 
     // REQUIRES: file to read
     // MODIFIES: this
-    // EFFECTS: creates a list of all Pokemon names from provided text file
-    static {
-        List<String> temp;
-        try {
-            temp = Files.readAllLines(new File(
-                    "." + File.separator + "data" + File.separator + "pokemon.txt").toPath());
-        } catch (IOException e) {
-            temp = new ArrayList<>();
-            e.printStackTrace();
-        }
-        String pokemonString = temp.get(0);
+    // EFFECTS: creates a list of all Pokemon names from provided filename
+    public AllPokemonList(String filename) throws IOException {
+        String pokemonString = Files.readAllLines(new File(
+                "." + File.separator + "data" + File.separator + filename).toPath()).get(0);
         pokemonList = Arrays.asList(pokemonString.split(","));
     }
-// NOTE: this method(?) is impossible to test I think so I could not cover it properly
-
 }

@@ -3,6 +3,8 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PomodoroTimerTest {
@@ -64,6 +66,9 @@ class PomodoroTimerTest {
         assertEquals(timer.getPomodoroLength(), timer.getRemainingTime());
         timer.pauseTimer();
         assertTrue(timer.getPaused());
+        timer.resetTimer();
+        assertEquals(timer.getPomodoroLength(), timer.getRemainingTime());
+
     }
 
     @Test
