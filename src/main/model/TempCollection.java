@@ -6,7 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 // Temporary Pokemon collection to store Pokemon obtained from Pomodoro timer
-public class TempCollection {
+public final class TempCollection {
+
+    public TempCollection() {
+        // constructor to make Jacoco happy
+    }
 
     private static List<Pokemon> tempCollection;
 

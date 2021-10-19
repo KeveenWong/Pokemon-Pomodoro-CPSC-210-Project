@@ -5,7 +5,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 // Represents the user's actual Pokemon collection
-public class PokemonCollection {
+public final class PokemonCollection {
+
+    public PokemonCollection() {
+        // constructor to make Jacoco happy
+    }
 
     private static List<Pokemon> collection;
 
