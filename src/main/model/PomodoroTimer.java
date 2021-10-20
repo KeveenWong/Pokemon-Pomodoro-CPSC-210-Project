@@ -77,7 +77,7 @@ public class PomodoroTimer {
             pomodoroFinish("pokemon.txt");
         } else if (state == State.ShortBreak) {
             shortBreakFinish();
-        } else if (state == State.LongBreak) {
+        } else {
             longBreakFinish();
         }
     }
