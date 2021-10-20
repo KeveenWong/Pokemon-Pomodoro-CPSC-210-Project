@@ -66,17 +66,13 @@ public class PomodoroTimer {
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 System.out.println(round(remainingTime));
-                try {
                     tickRemainingTime();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
         }, 0, period);
     }
 
     // EFFECTS: swaps between cases
-    public void switchBetweenCases() throws NullPointerException, IOException {
+    public void switchBetweenCases() throws NullPointerException {
         if (state == State.Pomodoro) {
             pomodoroFinish("pokemon.txt");
         } else if (state == State.ShortBreak) {
@@ -88,7 +84,7 @@ public class PomodoroTimer {
 
     // MODIFIES: this, TempCollection
     // EFFECTS: adds random pokemon to collection once complete, and checks if next break is long, else short
-    public void pomodoroFinish(String filename) throws IOException {
+    public void pomodoroFinish(String filename) {
         System.out.println("Pomodoro timer complete.");
         Pokemon pokemon;
         pokemon = Pokemon.getRandomPokemon(filename);
@@ -124,7 +120,7 @@ public class PomodoroTimer {
 
     // MODIFIES: this
     // EFFECTS: Changes and resets timer accordingly once remainingTime finishes (reaches 1). Else, tick timer once
-    private void tickRemainingTime() throws NullPointerException, IOException {
+    private void tickRemainingTime() throws NullPointerException {
         if (remainingTime == 0) {
             switchBetweenCases();
             timer.cancel();

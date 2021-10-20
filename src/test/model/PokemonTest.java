@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PokemonTest {
 
     @Test
-    public void testGetPokemonName() throws IOException {
+    public void testGetPokemonName() {
         Pokemon pokemon = new Pokemon("test", "");
         assertEquals("test", pokemon.getPokemonName());
     }
@@ -19,7 +19,7 @@ public class PokemonTest {
     @Test
     // NOTE: since this uses random it is a bit challenging/odd to do a test for so I just printed a bunch of random
     // pokemon to make sure it was working consistently.
-    public void testGetRandomPokemon() throws IOException {
+    public void testGetRandomPokemon() {
         for (int i = 0; i < 1000; i++) {
             Pokemon.getRandomPokemon("pokemon.txt");
         }
@@ -32,7 +32,7 @@ public class PokemonTest {
     }
 
     @Test
-    public void testPrintTempCollectionNotEmpty() throws IOException {
+    public void testPrintTempCollectionNotEmpty() {
         Pokemon pokemon1 = new Pokemon("test1", "");
         Pokemon pokemon2 = new Pokemon("test2", "");
 
@@ -44,7 +44,7 @@ public class PokemonTest {
     }
 
     @Test
-    public void testResetTemp() throws IOException {
+    public void testResetTemp() {
         Pokemon pokemon1 = new Pokemon("test1", "");
         Pokemon pokemon2 = new Pokemon("test2", "");
         TempCollection.init();
@@ -76,7 +76,7 @@ public class PokemonTest {
     }
 
     @Test
-    public void testPrintCollectionNotEmpty() throws IOException {
+    public void testPrintCollectionNotEmpty() {
         Pokemon pokemon1 = new Pokemon("test1", "");
         Pokemon pokemon2 = new Pokemon("test2", "");
 
@@ -87,7 +87,7 @@ public class PokemonTest {
     }
 
     @Test
-    public void testAddPokemonToCollection() throws IOException {
+    public void testAddPokemonToCollection() {
         Pokemon pokemon1 = new Pokemon("test1", "");
         Pokemon pokemon2 = new Pokemon("test2", "");
 
@@ -100,14 +100,7 @@ public class PokemonTest {
     }
 
     @Test
-    public void testAllPokemonList() {
-        try {
-            AllPokemonList pokemonList = new AllPokemonList("test");
-            Pokemon pokemon = Pokemon.getRandomPokemon("test");
-            fail("Should not have passed");
-        } catch (IOException e) {
-            System.out.println("pokemonList was not read correctly. Continuing program.");
-            // expected behaviour
-        }
+    public void testAllPokemonListFail() {
+        assertThrows(IllegalStateException.class, () -> new AllPokemonList("test"));
     }
 }

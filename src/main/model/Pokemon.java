@@ -10,7 +10,7 @@ public class Pokemon {
     private AllPokemonList pokemonList;
 
     // Constructor
-    public Pokemon(String actualName, String givenName) throws IOException {
+    public Pokemon(String actualName, String givenName) {
         this.actualName = actualName;
         this.givenName = givenName;
         this.pokemonList = new AllPokemonList("pokemon.txt");
@@ -25,7 +25,7 @@ public class Pokemon {
     // MODIFIES: this
     // EFFECTS: Generates random index and prints/returns element at that index in list
     // NOTE: since this uses random it is a bit challenging/odd to do a test for
-    public static Pokemon getRandomPokemon(String filename) throws IOException {
+    public static Pokemon getRandomPokemon(String filename) {
         AllPokemonList pokemonList = new AllPokemonList(filename);
         int index = (int) (Math.random() * pokemonList.pokemonList.size());
         String name = pokemonList.pokemonList.get(index);

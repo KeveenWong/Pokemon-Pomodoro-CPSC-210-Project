@@ -3,6 +3,7 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,7 +28,7 @@ class PomodoroTimerTest {
     }
 
     @Test
-    public void testTickRemainingTime() throws InterruptedException, IOException {
+    public void testTickRemainingTime() throws InterruptedException {
         TempCollection.init();
         timer.startTimer(3);
         Thread.sleep(3100);
@@ -85,7 +86,7 @@ class PomodoroTimerTest {
     }
 
     @Test
-    public void testSwitchBetweenCases() throws IOException {
+    public void testSwitchBetweenCases() {
         TempCollection.init();
         assertEquals(timer.getState(), PomodoroTimer.State.Pomodoro);
         timer.switchBetweenCases();
@@ -157,14 +158,6 @@ class PomodoroTimerTest {
         assertEquals(4, timer.getRemainingTime(), DELTA);
     }
 
-    @Test
-    public void testPomodoroFinishFail() {
-        try {
-            timer.pomodoroFinish("test");
-        } catch (IOException e) {
-            System.out.println("pokemonList was not read correctly. Continuing program.");
-            // expected behaviour
-        }
 
-    }
+
 }
