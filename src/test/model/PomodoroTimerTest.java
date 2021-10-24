@@ -159,6 +159,12 @@ class PomodoroTimerTest {
         assertEquals(4, timer.getRemainingTime(), DELTA);
     }
 
+    @Test
+    public void testGetTempCollection() {
+        Pokemon pokemon = new Pokemon("test", "");
+        timer.getTempCollection().addPokemonToTemporaryCollection(pokemon);
+        assertEquals(1, timer.getTempCollection().getTempCollectionList().size());
 
+    }
 
 }
