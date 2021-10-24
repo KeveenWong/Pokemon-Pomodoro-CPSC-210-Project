@@ -38,6 +38,7 @@ public class PokemonCollection {
     public int numPokemons() {
         return collection.size();
     }
+
     // MODIFIES: PokemonCollection
     // EFFECTS: adds given Pokemon to collection list
     public void addPokemonToCollection(Pokemon pokemon) {
