@@ -1,6 +1,7 @@
 package model;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.TimerTask;
 import java.util.Timer;
 
@@ -24,6 +25,13 @@ public class PomodoroTimer {
     private boolean paused = true;
     private int remainingTime;              // remaining time in timer
     private int pomodoroCounter;            // tracks number of fully complete Pomodoros
+    private TempCollection tempCollection;
+    private PokemonCollection pokemonCollection;
+
+    public PomodoroTimer() {
+        pokemonCollection = new PokemonCollection();
+        tempCollection = new TempCollection();
+    }
 
     // Getter methods
     public Integer getPomodoroLength() {
@@ -44,6 +52,10 @@ public class PomodoroTimer {
 
     public Integer getPomodoroCounter() {
         return pomodoroCounter;
+    }
+
+    public TempCollection getTempCollection() {
+        return tempCollection;
     }
 
     // REQUIRES: initialTime > 0
@@ -88,7 +100,7 @@ public class PomodoroTimer {
         System.out.println("Pomodoro timer complete.");
         Pokemon pokemon;
         pokemon = Pokemon.getRandomPokemon(filename);
-        TempCollection.addPokemonToTemporaryCollection(pokemon);
+        tempCollection.addPokemonToTemporaryCollection(pokemon);
         pomodoroCounter++;
         if (pomodoroCounter == 4) {
             System.out.println("Entering long break.");

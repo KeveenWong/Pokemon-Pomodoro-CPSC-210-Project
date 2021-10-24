@@ -1,14 +1,24 @@
 package ui;
 
 import model.*;
+import org.junit.jupiter.api.BeforeEach;
+import persistence.Reading;
+import persistence.Writing;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 // Pokemon Pomodoro application
 public class PomodoroPokemon {
+    private static final String JSON_STORE = "./data/pokemoncollection.json";
     private Scanner input;
     private PomodoroTimer timer;
     private Pokemon pokemon;
+    private PokemonCollection pokemonCollection;
+    private Writing jsonWriter;
+    private Reading jsonReader;
 
     // EFFECTS: runs the pomodoro application
     public PomodoroPokemon() {
@@ -20,8 +30,9 @@ public class PomodoroPokemon {
     private void initialize() {
         timer = new PomodoroTimer();
         input = new Scanner(System.in);
-        TempCollection.init();
-        PokemonCollection.init();
+        pokemonCollection = new PokemonCollection();
+        jsonWriter = new Writing(JSON_STORE);
+        jsonReader = new Reading(JSON_STORE);
     }
 
     // EFFECTS: displays menu of options to user
@@ -29,6 +40,8 @@ public class PomodoroPokemon {
         System.out.println("\nSelect from:");
         System.out.println("\tt -> Pomodoro Timer");
         System.out.println("\tc -> Collection");
+        System.out.println("\ts -> Save collection to file");
+        System.out.println("\tl -> Load collection from file");
         System.out.println("\tq -> Quit");
     }
 
@@ -61,6 +74,10 @@ public class PomodoroPokemon {
             beginTimer();
         } else if (command.equals("c")) {
             openCollection();
+        } else if (command.equals("s")) {
+            saveWorkRoom();
+        } else if (command.equals("l")) {
+            loadWorkRoom();
         } else {
             System.out.println("Selection not valid...");
         }
@@ -104,10 +121,11 @@ public class PomodoroPokemon {
     // EFFECTS: exits timer option and allows user to select Pokemon if available
     private void exitAndDoSelection() {
         timer.exitTimer();
-        TempCollection.printTempCollection();
+        timer.getTempCollection().printTempCollection();
         pokemonSelection();
-        TempCollection.resetTemp();
+        timer.getTempCollection().resetTemp();
     }
+
 
     // MODIFIES: this
     // EFFECTS: processes user command in collection option
@@ -136,7 +154,7 @@ public class PomodoroPokemon {
     // EFFECTS: prints all Pokemon in PokemonCollection and displays menu option
     private void openCollection() {
         System.out.println("Your Pokemon Collection:");
-        PokemonCollection.printCollection();
+        pokemonCollection.printCollection();
         System.out.println("e for exit");
         processCollectionCommand();
     }
@@ -145,7 +163,7 @@ public class PomodoroPokemon {
     // EFFECTS: prompts user to select which Pokemon they would like to add to PokemonCollection
     private void pokemonSelection() {
 
-        for (Pokemon pokemon : TempCollection.getTempCollection()) {
+        for (Pokemon pokemon : timer.getTempCollection().getTempCollectionList()) {
             String selection = "";
             System.out.println("Would you like to keep" + pokemon.getPokemonName() + "? (y/n)");
 
@@ -155,7 +173,7 @@ public class PomodoroPokemon {
             }
 
             if (selection.equals("y")) {
-                PokemonCollection.addPokemonToCollection(pokemon);
+                pokemonCollection.addPokemonToCollection(pokemon);
                 System.out.println(pokemon.getPokemonName() + " added to collection.");
             }
 
@@ -163,6 +181,29 @@ public class PomodoroPokemon {
                 System.out.println(pokemon.getPokemonName() + " was released.");
             }
 
+        }
+    }
+
+    // EFFECTS: saves the workroom to file
+    private void saveWorkRoom() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(pokemonCollection);
+            jsonWriter.close();
+            System.out.println("Saved collection to " + JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_STORE);
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: loads workroom from file
+    private void loadWorkRoom() {
+        try {
+            pokemonCollection = jsonReader.read();
+            System.out.println("Loaded collection from " + JSON_STORE);
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_STORE);
         }
     }
 }

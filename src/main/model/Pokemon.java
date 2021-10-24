@@ -1,10 +1,13 @@
 package model;
 
+import org.json.JSONObject;
+import persistence.Writable;
+
 import java.io.IOException;
 import java.util.List;
 
 // Represents a Pokemon with its actual name and a given name (latter not yet implemented)
-public class Pokemon {
+public class Pokemon implements Writable {
     private String actualName;
     private String givenName;
     private AllPokemonList pokemonList;
@@ -34,7 +37,12 @@ public class Pokemon {
         return pokemon;
     }
 
-
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("name", actualName);
+        return json;
+    }
 
 
 

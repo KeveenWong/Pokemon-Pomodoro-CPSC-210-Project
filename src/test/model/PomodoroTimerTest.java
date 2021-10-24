@@ -2,22 +2,28 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import sun.awt.image.ImageWatched;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class PomodoroTimerTest {
     private PomodoroTimer timer;
+    private PokemonCollection pokemonCollection;
+    private TempCollection tempCollection;
 
     @BeforeEach
     public void runBefore() {
         timer = new PomodoroTimer();
+        pokemonCollection = new PokemonCollection();
+        tempCollection = new TempCollection();
     }
 
     private static final int DELTA = 1;
-
 
     @Test
     public void testStartTimer() throws InterruptedException {
@@ -29,7 +35,6 @@ class PomodoroTimerTest {
 
     @Test
     public void testTickRemainingTime() throws InterruptedException {
-        TempCollection.init();
         timer.startTimer(3);
         Thread.sleep(3100);
         assertEquals(timer.getState(), PomodoroTimer.State.ShortBreak);
@@ -87,7 +92,6 @@ class PomodoroTimerTest {
 
     @Test
     public void testSwitchBetweenCases() {
-        TempCollection.init();
         assertEquals(timer.getState(), PomodoroTimer.State.Pomodoro);
         timer.switchBetweenCases();
         assertEquals(1, timer.getPomodoroCounter());
@@ -110,7 +114,6 @@ class PomodoroTimerTest {
 
     @Test
     public void testPomodoroFinish() throws InterruptedException {
-        TempCollection.init();
         timer.startTimer(5);
         Thread.sleep(5100);
         assertEquals(timer.getState(), PomodoroTimer.State.ShortBreak);
@@ -121,7 +124,6 @@ class PomodoroTimerTest {
 
     @Test
     public void testShortBreakFinish() throws InterruptedException {
-        TempCollection.init();
         timer.startTimer(5);
         Thread.sleep(5100);
         // start short break
@@ -133,7 +135,6 @@ class PomodoroTimerTest {
 
     @Test
     public void testLongBreakFinish() throws InterruptedException {
-        TempCollection.init();
         timer.startTimer(5);
         Thread.sleep(5100);
         // 1 pomodoro

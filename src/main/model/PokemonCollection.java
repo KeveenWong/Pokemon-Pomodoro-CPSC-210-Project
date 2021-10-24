@@ -1,29 +1,28 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 // Represents the user's actual Pokemon collection
-public final class PokemonCollection {
-
-    private PokemonCollection() {
-        // constructor to make Jacoco happy
-    }
-
-    private static List<Pokemon> collection;
+public class PokemonCollection {
+    private List<Pokemon> collection;
 
     // EFFECTS: initializes collection
-    public static void init() {
+    public PokemonCollection() {
         collection = new LinkedList<>();
     }
 
-    public static List<Pokemon> getCollection() {
+    public List<Pokemon> getCollection() {
         return collection;
     }
 
     // EFFECTS: prints each name of Pokemon in collection list
-    public static Boolean printCollection() {
+    public Boolean printCollection() {
         if (!(collection.isEmpty())) {
             for (Pokemon pokemon : collection) {
                 System.out.println(pokemon.getPokemonName());
@@ -35,11 +34,30 @@ public final class PokemonCollection {
 
     }
 
+    // EFFECTS: returns number of Pokemons in this workroom
+    public int numPokemons() {
+        return collection.size();
+    }
     // MODIFIES: PokemonCollection
     // EFFECTS: adds given Pokemon to collection list
-    public static void addPokemonToCollection(Pokemon pokemon) {
+    public void addPokemonToCollection(Pokemon pokemon) {
         collection.add(pokemon);
     }
 
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("Pokemons", pokemonToJson());
+        return json;
+    }
 
+    // EFFECTS: returns things in this workroom as a JSON array
+    private JSONArray pokemonToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Pokemon p : collection) {
+            jsonArray.put(p.toJson());
+        }
+
+        return jsonArray;
+    }
 }
