@@ -39,13 +39,11 @@
 > - Reset a Pomodoro Timer
 > - Start the break after a Pomodoro*
 > - Choose which Pokémon I want to add to my collection
-> - Name my Pokémon*
 > - Check my collection of Pokémon
-> - Check my statistics (# of total Pokémon collected, # of unique Pokémon collected, # of completed Pomodoros, etc.)*
-> - Save my Pomodoro Timer and Pokémon collection to file
-> - Load my Pomodoro Timer and Pokémon collection to file
+> - Save my Pokémon collection to file
+> - Load my Pokémon collection to file
 > 
-> (Starred * user stories are not yet implemented)
+
 
 *© 2021 Pokémon. © 1995–2021 Nintendo/Creatures Inc./GAME FREAK inc. Pokémon, Pokémon character names, Nintendo Switch, 
 Nintendo 3DS, Nintendo DS, Wii, Wii U, and WiiWare are trademarks of Nintendo.*

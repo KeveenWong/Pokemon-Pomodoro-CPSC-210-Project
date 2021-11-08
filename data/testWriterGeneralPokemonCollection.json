@@ -1,10 +1,4 @@
-{
-  "Pokemons": [
-    {
-      "name": "Pikachu"
-    },
-    {
-      "name": "Charmander"
-    }
-  ]
-}
+{"Pokemons": [
+    {"name": "Pikachu"},
+    {"name": "Charmander"}
+]}
