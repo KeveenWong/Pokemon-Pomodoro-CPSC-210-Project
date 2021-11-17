@@ -1,13 +1,11 @@
 package ui;
 
 import model.*;
-import org.junit.jupiter.api.BeforeEach;
 import persistence.Reading;
 import persistence.Writing;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 import java.util.Scanner;
 
 // Pokemon Pomodoro application
@@ -75,9 +73,9 @@ public class PomodoroPokemon {
         } else if (command.equals("c")) {
             openCollection();
         } else if (command.equals("s")) {
-            saveWorkRoom();
+            saveCollection();
         } else if (command.equals("l")) {
-            loadWorkRoom();
+            loadCollection();
         } else {
             System.out.println("Selection not valid...");
         }
@@ -184,8 +182,8 @@ public class PomodoroPokemon {
         }
     }
 
-    // EFFECTS: saves the workroom to file
-    private void saveWorkRoom() {
+    // EFFECTS: saves the Collection to file
+    private void saveCollection() {
         try {
             jsonWriter.open();
             jsonWriter.write(pokemonCollection);
@@ -197,8 +195,8 @@ public class PomodoroPokemon {
     }
 
     // MODIFIES: this
-    // EFFECTS: loads workroom from file
-    private void loadWorkRoom() {
+    // EFFECTS: loads Collection from file
+    private void loadCollection() {
         try {
             pokemonCollection = jsonReader.read();
             System.out.println("Loaded collection from " + JSON_STORE);

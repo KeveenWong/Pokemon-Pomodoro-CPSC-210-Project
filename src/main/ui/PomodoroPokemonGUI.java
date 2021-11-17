@@ -31,188 +31,125 @@
 
 package ui;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.ButtonGroup;
-import javax.swing.JMenuBar;
-import javax.swing.KeyStroke;
-import javax.swing.ImageIcon;
+import model.Pokemon;
+import model.PokemonCollection;
+import model.PomodoroTimer;
+import persistence.Reading;
+import persistence.Writing;
 
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.text.DefaultCaret;
+import javax.swing.AbstractButton;
+import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JScrollPane;
 import javax.swing.JFrame;
 
-/* MenuDemo.java requires images/middle.gif. */
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.util.Scanner;
 
-/*
- * This class is just like MenuLookDemo, except the menu items
- * actually do something, thanks to event listeners.
- */
-public class PomodoroPokemonGUI implements ActionListener, ItemListener {
-    JTextArea output;
-    JScrollPane scrollPane;
-    String newline = "\n";
+public class PomodoroPokemonGUI extends JPanel implements ActionListener {
+    private static final String JSON_STORE = "./data/pokemoncollection.json";
+    private JButton timerButton;
+    private JButton collectionButton;
+    private JButton exitButton;
+    private JButton pauseButton;
+    private PomodoroTimer timer;
+    private Pokemon pokemon;
+    private PokemonCollection pokemonCollection;
+    private Writing jsonWriter;
+    private Reading jsonReader;
 
-    @SuppressWarnings({"checkstyle:MethodLength", "checkstyle:SuppressWarnings"})
-    public JMenuBar createMenuBar() {
-        JMenuBar menuBar;
-        JMenu menu;
-        JMenu submenu;
-        JMenuItem menuItem;
-        JRadioButtonMenuItem rbMenuItem;
-        JCheckBoxMenuItem cbMenuItem;
+    public PomodoroPokemonGUI() {
+        timerButton = new JButton("Pomodoro Timer");
+        timerButton.setVerticalTextPosition(AbstractButton.CENTER);
+        timerButton.setHorizontalTextPosition(AbstractButton.LEADING); //aka LEFT, for left-to-right locales
+        timerButton.setActionCommand("timer");
 
-        //Create the menu bar.
-        menuBar = new JMenuBar();
+        collectionButton = new JButton("Collection");
+        collectionButton.setVerticalTextPosition(AbstractButton.BOTTOM);
+        collectionButton.setHorizontalTextPosition(AbstractButton.CENTER);
+        collectionButton.setActionCommand("collection");
 
-        //Build the first menu.
-        menu = new JMenu("A Menu");
-        menu.setMnemonic(KeyEvent.VK_A);
-        menu.getAccessibleContext().setAccessibleDescription(
-                "The only menu in this program that has menu items");
-        menuBar.add(menu);
+        exitButton = new JButton("Quit");
+        // Use the default text position of CENTER, TRAILING (RIGHT).
+        exitButton.setActionCommand("quit");
 
-        //a group of JMenuItems
-        menuItem = new JMenuItem("A text-only menu item",
-                KeyEvent.VK_T);
-        //menuItem.setMnemonic(KeyEvent.VK_T); //used constructor instead
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_1, ActionEvent.ALT_MASK));
-        menuItem.getAccessibleContext().setAccessibleDescription(
-                "This doesn't really do anything");
-        menuItem.addActionListener(this);
-        menu.add(menuItem);
+        // Listen for actions on buttons
+        timerButton.addActionListener(this);
+        collectionButton.addActionListener(this);
+        exitButton.addActionListener(this);
 
-        ImageIcon icon = createImageIcon("images/middle.gif");
-        menuItem = new JMenuItem("Both text and icon", icon);
-        menuItem.setMnemonic(KeyEvent.VK_B);
-        menuItem.addActionListener(this);
-        menu.add(menuItem);
+        timerButton.setToolTipText("Enter the Pomodoro Timer");
+        collectionButton.setToolTipText("View your Pokemon collection");
+        exitButton.setToolTipText("Exit the program");
 
-        menuItem = new JMenuItem(icon);
-        menuItem.setMnemonic(KeyEvent.VK_D);
-        menuItem.addActionListener(this);
-        menu.add(menuItem);
-
-        //a group of radio button menu items
-        menu.addSeparator();
-        ButtonGroup group = new ButtonGroup();
-
-        rbMenuItem = new JRadioButtonMenuItem("A radio button menu item");
-        rbMenuItem.setSelected(true);
-        rbMenuItem.setMnemonic(KeyEvent.VK_R);
-        group.add(rbMenuItem);
-        rbMenuItem.addActionListener(this);
-        menu.add(rbMenuItem);
-
-        rbMenuItem = new JRadioButtonMenuItem("Another one");
-        rbMenuItem.setMnemonic(KeyEvent.VK_O);
-        group.add(rbMenuItem);
-        rbMenuItem.addActionListener(this);
-        menu.add(rbMenuItem);
-
-        //a group of check box menu items
-        menu.addSeparator();
-        cbMenuItem = new JCheckBoxMenuItem("A check box menu item");
-        cbMenuItem.setMnemonic(KeyEvent.VK_C);
-        cbMenuItem.addItemListener(this);
-        menu.add(cbMenuItem);
-
-        cbMenuItem = new JCheckBoxMenuItem("Another one");
-        cbMenuItem.setMnemonic(KeyEvent.VK_H);
-        cbMenuItem.addItemListener(this);
-        menu.add(cbMenuItem);
-
-        //a submenu
-        menu.addSeparator();
-        submenu = new JMenu("A submenu");
-        submenu.setMnemonic(KeyEvent.VK_S);
-
-        menuItem = new JMenuItem("An item in the submenu");
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_2, ActionEvent.ALT_MASK));
-        menuItem.addActionListener(this);
-        submenu.add(menuItem);
-
-        menuItem = new JMenuItem("Another item");
-        menuItem.addActionListener(this);
-        submenu.add(menuItem);
-        menu.add(submenu);
-
-        //Build second menu in the menu bar.
-        menu = new JMenu("Another Menu");
-        menu.setMnemonic(KeyEvent.VK_N);
-        menu.getAccessibleContext().setAccessibleDescription(
-                "This menu does nothing");
-        menuBar.add(menu);
-
-        return menuBar;
+        // Add Components to this container, using the default FlowLayout.
+        add(timerButton);
+        add(collectionButton);
+        add(exitButton);
     }
 
-    public Container createContentPane() {
-        //Create the content-pane-to-be.
-        JPanel contentPane = new JPanel(new BorderLayout());
-        contentPane.setOpaque(true);
-
-        //Create a scrolled text area.
-        output = new JTextArea(5, 30);
-        output.setEditable(false);
-        scrollPane = new JScrollPane(output);
-
-        //Add the text area to the content pane.
-        contentPane.add(scrollPane, BorderLayout.CENTER);
-
-        return contentPane;
+    // MODIFIES: this
+    // EFFECTS: initializes timer, input, collections
+    public void initialize() {
+        timer = new PomodoroTimer();
+        pokemonCollection = new PokemonCollection();
+        jsonWriter = new Writing(JSON_STORE);
+        jsonReader = new Reading(JSON_STORE);
     }
 
     public void actionPerformed(ActionEvent e) {
-        JMenuItem source = (JMenuItem) (e.getSource());
-        String s = "Action event detected."
-                + newline
-                + "    Event source: " + source.getText()
-                + " (an instance of " + getClassName(source) + ")";
-        output.append(s + newline);
-        output.setCaretPosition(output.getDocument().getLength());
-    }
-
-    public void itemStateChanged(ItemEvent e) {
-        JMenuItem source = (JMenuItem) (e.getSource());
-        String s = "Item event detected."
-                + newline
-                + "    Event source: " + source.getText()
-                + " (an instance of " + getClassName(source) + ")"
-                + newline
-                + "    New state: "
-                + ((e.getStateChange() == ItemEvent.SELECTED)
-                ? "selected" : "unselected");
-        output.append(s + newline);
-        output.setCaretPosition(output.getDocument().getLength());
-    }
-
-    // Returns just the class name -- no package info.
-    protected String getClassName(Object o) {
-        String classString = o.getClass().getName();
-        int dotIndex = classString.lastIndexOf(".");
-        return classString.substring(dotIndex + 1);
-    }
-
-    /**
-     * Returns an ImageIcon, or null if the path was invalid.
-     */
-    protected static ImageIcon createImageIcon(String path) {
-        java.net.URL imgURL = PomodoroPokemonGUI.class.getResource(path);
-        if (imgURL != null) {
-            return new ImageIcon(imgURL);
-        } else {
-            System.err.println("Couldn't find file: " + path);
-            return null;
+        if ("timer".equals(e.getActionCommand())) {
+            createTimerFrame();
+        } else if ("quit".equals(e.getActionCommand())) {
+            System.out.println("See you next time!");
+            System.exit(0);
         }
     }
+
+    public void timerActionPerformed(ActionEvent e) {
+        if ("pause".equals(e.getActionCommand())) {
+            timer.pauseTimer();
+        } else if ("quit".equals(e.getActionCommand())) {
+            System.out.println("See you next time!");
+            System.exit(0);
+        }
+    }
+
+    public void createTimerFrame() {
+        // Initialize and begin timer
+        timer = new PomodoroTimer();
+        timer.startTimer(timer.getPomodoroLength());
+
+        // Create and set up the window with buttons.
+        JFrame frame = new JFrame("PomodoroPokemonGUI");
+
+        // Timer
+        JLabel timerLabel = new JLabel("Time remaining: " + timer.getRemainingTime());
+        // Pause
+        pauseButton = new JButton("Pause");
+        pauseButton.addActionListener(this);
+        pauseButton.setActionCommand("pause");
+
+
+        JPanel panel = new JPanel();
+        panel.setBorder(BorderFactory.createEmptyBorder(300, 300, 100, 100));
+        panel.setLayout(new GridLayout(0, 1));
+        panel.add(pauseButton);
+        panel.add(timerLabel);
+        frame.add(panel, BorderLayout.CENTER);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+
+
+    }
+
+
+
 
     /**
      * Create the GUI and show it.  For thread safety,
@@ -220,17 +157,18 @@ public class PomodoroPokemonGUI implements ActionListener, ItemListener {
      * event-dispatching thread.
      */
     public static void createAndShowGUI() {
-        //Create and set up the window.
+
+        // Create and set up the window.
         JFrame frame = new JFrame("PomodoroPokemonGUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //Create and set up the content pane.
-        PomodoroPokemonGUI demo = new PomodoroPokemonGUI();
-        frame.setJMenuBar(demo.createMenuBar());
-        frame.setContentPane(demo.createContentPane());
+        // Create and set up the content pane.
+        PomodoroPokemonGUI newContentPane = new PomodoroPokemonGUI();
+        newContentPane.setOpaque(true); //content panes must be opaque
+        frame.setContentPane(newContentPane);
 
-        //Display the window.
-        frame.setSize(450, 260);
+        // Display the window.
+        frame.pack();
         frame.setVisible(true);
     }
 
