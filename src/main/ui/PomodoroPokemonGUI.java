@@ -39,7 +39,7 @@ import persistence.Writing;
 
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.text.DefaultCaret;
+import javax.swing.text.BadLocationException;
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -47,22 +47,32 @@ import javax.swing.JFrame;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.util.Scanner;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 public class PomodoroPokemonGUI extends JPanel implements ActionListener {
     private static final String JSON_STORE = "./data/pokemoncollection.json";
     private JButton timerButton;
     private JButton collectionButton;
-    private JButton exitButton;
+    private JButton quitButton;
     private JButton pauseButton;
+    private JButton unpauseButton;
+    private JButton resetButton;
+    private JButton clearButton;
     private PomodoroTimer timer;
     private Pokemon pokemon;
     private PokemonCollection pokemonCollection;
     private Writing jsonWriter;
     private Reading jsonReader;
+    private int currentTimerValue;
+    private int timerSpeed = 1000;
+    private int timerDelay = 1000;
 
     public PomodoroPokemonGUI() {
+        initialize();
+
         timerButton = new JButton("Pomodoro Timer");
         timerButton.setVerticalTextPosition(AbstractButton.CENTER);
         timerButton.setHorizontalTextPosition(AbstractButton.LEADING); //aka LEFT, for left-to-right locales
@@ -73,23 +83,23 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
         collectionButton.setHorizontalTextPosition(AbstractButton.CENTER);
         collectionButton.setActionCommand("collection");
 
-        exitButton = new JButton("Quit");
+        quitButton = new JButton("Quit");
         // Use the default text position of CENTER, TRAILING (RIGHT).
-        exitButton.setActionCommand("quit");
+        quitButton.setActionCommand("quit");
 
         // Listen for actions on buttons
         timerButton.addActionListener(this);
         collectionButton.addActionListener(this);
-        exitButton.addActionListener(this);
+        quitButton.addActionListener(this);
 
         timerButton.setToolTipText("Enter the Pomodoro Timer");
         collectionButton.setToolTipText("View your Pokemon collection");
-        exitButton.setToolTipText("Exit the program");
+        quitButton.setToolTipText("Exit the program");
 
         // Add Components to this container, using the default FlowLayout.
         add(timerButton);
         add(collectionButton);
-        add(exitButton);
+        add(quitButton);
     }
 
     // MODIFIES: this
@@ -103,52 +113,12 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if ("timer".equals(e.getActionCommand())) {
-            createTimerFrame();
+            new TimerMenu().setVisible(true);
         } else if ("quit".equals(e.getActionCommand())) {
             System.out.println("See you next time!");
             System.exit(0);
         }
     }
-
-    public void timerActionPerformed(ActionEvent e) {
-        if ("pause".equals(e.getActionCommand())) {
-            timer.pauseTimer();
-        } else if ("quit".equals(e.getActionCommand())) {
-            System.out.println("See you next time!");
-            System.exit(0);
-        }
-    }
-
-    public void createTimerFrame() {
-        // Initialize and begin timer
-        timer = new PomodoroTimer();
-        timer.startTimer(timer.getPomodoroLength());
-
-        // Create and set up the window with buttons.
-        JFrame frame = new JFrame("PomodoroPokemonGUI");
-
-        // Timer
-        JLabel timerLabel = new JLabel("Time remaining: " + timer.getRemainingTime());
-        // Pause
-        pauseButton = new JButton("Pause");
-        pauseButton.addActionListener(this);
-        pauseButton.setActionCommand("pause");
-
-
-        JPanel panel = new JPanel();
-        panel.setBorder(BorderFactory.createEmptyBorder(300, 300, 100, 100));
-        panel.setLayout(new GridLayout(0, 1));
-        panel.add(pauseButton);
-        panel.add(timerLabel);
-        frame.add(panel, BorderLayout.CENTER);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-
-
-    }
-
-
 
 
     /**
@@ -172,4 +142,150 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
         frame.setVisible(true);
     }
 
+    public static void main(String[] args) {
+        //Schedule a job for the event-dispatching thread:
+        //creating and showing this application's GUI.
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                createAndShowGUI();
+            }
+        });
+    }
+
+    /**
+     * This class extends from OutputStream to redirect output to a JTextArrea
+     *
+     * @author www.codejava.net
+     */
+    public static class CustomOutputStream extends OutputStream {
+        private JTextArea textArea;
+
+        public CustomOutputStream(JTextArea textArea) {
+            this.textArea = textArea;
+        }
+
+        @Override
+        public void write(int b) throws IOException {
+            // redirects data to the text area
+            textArea.append(String.valueOf((char) b));
+            // scrolls the text area to the end of data
+            textArea.setCaretPosition(textArea.getDocument().getLength());
+        }
+    }
+
+    /**
+     * This class redirect output to a JTextArea representing a Pomodoro Timer
+     * taken from CodeJava and modified for personal use
+     *
+     * @author www.codejava.net
+     */
+    public class TimerMenu extends JFrame {
+        /**
+         * The text area which is used for displaying logging information.
+         */
+        private JTextArea textArea;
+
+        private PrintStream standardOut;
+
+        @SuppressWarnings({"checkstyle:MethodLength", "checkstyle:SuppressWarnings"})
+        public TimerMenu() {
+            super("Pomodoro Timer");
+
+            timer = new PomodoroTimer();
+
+            textArea = new JTextArea(50, 10);
+            textArea.setEditable(false);
+            PrintStream printStream = new PrintStream(new CustomOutputStream(textArea));
+
+            // keeps reference of standard output stream
+            standardOut = System.out;
+
+            // re-assigns standard output stream and error output stream
+            System.setOut(printStream);
+            System.setErr(printStream);
+
+            // creates the GUI
+            setLayout(new GridBagLayout());
+            GridBagConstraints constraints = new GridBagConstraints();
+            constraints.gridx = 0;
+            constraints.gridy = 0;
+            constraints.insets = new Insets(10, 5, 10, 5);
+            constraints.anchor = GridBagConstraints.WEST;
+
+            // Pause
+            pauseButton = new JButton("Pause");
+            add(pauseButton, constraints);
+
+            // Un-pause
+            unpauseButton = new JButton("Un-pause");
+            constraints.gridx = 1;
+            add(unpauseButton, constraints);
+
+            // Reset
+            resetButton = new JButton("Reset");
+            constraints.gridx = 2;
+            add(resetButton, constraints);
+
+            // Clear
+            clearButton = new JButton("Clear");
+            constraints.gridx = 4;
+            add(clearButton, constraints);
+
+            constraints.gridx = 0;
+            constraints.gridy = 1;
+            constraints.gridwidth = 4;
+            constraints.fill = GridBagConstraints.BOTH;
+            constraints.weightx = 1.0;
+            constraints.weighty = 1.0;
+
+            add(new JScrollPane(textArea), constraints);
+
+            // starts Pomodoro Timer
+            timer.startTimer(timer.getPomodoroLength());
+
+            // adds event handler for button Pause
+            pauseButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    timer.pauseTimer();
+                }
+            });
+
+            // adds event handler for button Un-pause
+            unpauseButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    timer.unpauseTimer();
+                }
+            });
+
+            // adds event handler for button Reset
+            resetButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    timer.resetTimer();
+                }
+            });
+
+
+            // adds event handler for button Clear
+            clearButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent evt) {
+                    // clears the text area
+                    try {
+                        textArea.getDocument().remove(0,
+                                textArea.getDocument().getLength());
+                        standardOut.println("Text area cleared");
+                    } catch (BadLocationException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            setSize(480, 320);
+            setLocationRelativeTo(null);    // centers on screen
+        }
+
+    }
 }

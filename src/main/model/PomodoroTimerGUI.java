@@ -1,15 +1,12 @@
 package model;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.TimerTask;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import static java.lang.Math.round;
-import static org.junit.jupiter.api.Assertions.fail;
 
 // Pomodoro Timer with study (Pomodoro) timer, short break, and long break
-public class PomodoroTimer {
+public class PomodoroTimerGUI {
     public enum State {
         Pomodoro,
         ShortBreak,
@@ -29,7 +26,7 @@ public class PomodoroTimer {
     private TempCollection tempCollection;
     private PokemonCollection pokemonCollection;
 
-    public PomodoroTimer() {
+    public PomodoroTimerGUI() {
         pokemonCollection = new PokemonCollection();
         tempCollection = new TempCollection();
     }
@@ -68,8 +65,8 @@ public class PomodoroTimer {
     // EFFECTS: prints starting time, sets paused to false, sets remainingTime to initialTime, and begins timer tick
     public void startTimer(int initialTime) {
         state = State.Pomodoro;
-        paused = false;
         System.out.print("Starting Pomodoro! ");
+        paused = false;
         System.out.print(initialTime);
         System.out.println(" seconds remaining!");
         remainingTime = initialTime;
@@ -153,10 +150,7 @@ public class PomodoroTimer {
     // MODIFIES: this
     // EFFECTS: pauses timer by setting paused = true
     public void pauseTimer() {
-        if (paused == true) {
-            return;
-        }
-        System.out.println("Paused");
+        System.out.println("Paused timer!");
         timer.cancel();
         paused = true;
     }
@@ -164,19 +158,18 @@ public class PomodoroTimer {
     // MODIFIES: this
     // EFFECTS: un-pauses timer by setting paused = false
     public void unpauseTimer() {
-        if (paused == false) {
-            return;
-        }
         paused = false;
-        System.out.println("Un-paused. " + (round(remainingTime)) + " seconds remaining!");
+        System.out.println("Un-paused timer! " + (round(remainingTime)) + " seconds remaining!");
         startTicking();
     }
 
     // MODIFIES: this
     // EFFECTS: resets timer by starting timer at initial values
     public void resetTimer() {
+        if (!paused) {
+            pauseTimer();
+        }
         System.out.println("Reset timer!");
-        timer.cancel();
         startTimer(pomodoroLength);
     }
 
