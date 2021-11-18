@@ -56,6 +56,8 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
     private static final String JSON_STORE = "./data/pokemoncollection.json";
     private JButton timerButton;
     private JButton collectionButton;
+    private JButton saveButton;
+    private JButton loadButton;
     private JButton quitButton;
     private JButton pauseButton;
     private JButton unpauseButton;
@@ -83,6 +85,16 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
         collectionButton.setHorizontalTextPosition(AbstractButton.CENTER);
         collectionButton.setActionCommand("collection");
 
+        saveButton = new JButton("Save");
+        saveButton.setVerticalTextPosition(AbstractButton.BOTTOM);
+        saveButton.setHorizontalTextPosition(AbstractButton.LEFT);
+        saveButton.setActionCommand("save");
+
+        loadButton = new JButton("Load");
+        loadButton.setVerticalTextPosition(AbstractButton.BOTTOM);
+        loadButton.setHorizontalTextPosition(AbstractButton.RIGHT);
+        loadButton.setActionCommand("load");
+
         quitButton = new JButton("Quit");
         // Use the default text position of CENTER, TRAILING (RIGHT).
         quitButton.setActionCommand("quit");
@@ -90,15 +102,22 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
         // Listen for actions on buttons
         timerButton.addActionListener(this);
         collectionButton.addActionListener(this);
+        saveButton.addActionListener(this);
+        loadButton.addActionListener(this);
         quitButton.addActionListener(this);
+
 
         timerButton.setToolTipText("Enter the Pomodoro Timer");
         collectionButton.setToolTipText("View your Pokemon collection");
+        saveButton.setToolTipText("Save your collection");
+        loadButton.setToolTipText("Load your collection");
         quitButton.setToolTipText("Exit the program");
 
         // Add Components to this container, using the default FlowLayout.
         add(timerButton);
         add(collectionButton);
+        add(saveButton);
+        add(loadButton);
         add(quitButton);
     }
 
@@ -114,6 +133,10 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if ("timer".equals(e.getActionCommand())) {
             new TimerMenu().setVisible(true);
+        } else if ("collection".equals(e.getActionCommand())) {
+            SelectionWindow selectionWindow = new SelectionWindow();
+            System.out.println("You have Pokémon waiting to be added to your collection!");
+            doSelection();
         } else if ("quit".equals(e.getActionCommand())) {
             System.out.println("See you next time!");
             System.exit(0);
@@ -140,6 +163,7 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
         // Display the window.
         frame.pack();
         frame.setVisible(true);
+
     }
 
     public static void main(String[] args) {
@@ -179,7 +203,7 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
      *
      * @author www.codejava.net
      */
-    public class TimerMenu extends JFrame {
+    public class TimerMenu extends JPanel {
         /**
          * The text area which is used for displaying logging information.
          */
@@ -189,7 +213,10 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
 
         @SuppressWarnings({"checkstyle:MethodLength", "checkstyle:SuppressWarnings"})
         public TimerMenu() {
-            super("Pomodoro Timer");
+            JFrame timerFrame = new JFrame("Pomodoro Timer");
+
+            timerFrame.pack();
+            timerFrame.setVisible(true);
 
             timer = new PomodoroTimer();
 
@@ -205,40 +232,31 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
             System.setErr(printStream);
 
             // creates the GUI
-            setLayout(new GridBagLayout());
-            GridBagConstraints constraints = new GridBagConstraints();
-            constraints.gridx = 0;
-            constraints.gridy = 0;
-            constraints.insets = new Insets(10, 5, 10, 5);
-            constraints.anchor = GridBagConstraints.WEST;
+            timerFrame.setDefaultCloseOperation(timerFrame.DISPOSE_ON_CLOSE);
+            timerFrame.setSize(420, 420);
+            timerFrame.setVisible(true);
 
             // Pause
             pauseButton = new JButton("Pause");
-            add(pauseButton, constraints);
+            pauseButton.setVerticalTextPosition(AbstractButton.CENTER);
+            pauseButton.setHorizontalTextPosition(AbstractButton.LEADING); //aka LEFT, for left-to-right locales
+            add(pauseButton);
 
             // Un-pause
             unpauseButton = new JButton("Un-pause");
-            constraints.gridx = 1;
-            add(unpauseButton, constraints);
+            add(unpauseButton);
 
             // Reset
             resetButton = new JButton("Reset");
-            constraints.gridx = 2;
-            add(resetButton, constraints);
+            add(resetButton);
 
             // Clear
             clearButton = new JButton("Clear");
-            constraints.gridx = 4;
-            add(clearButton, constraints);
+            add(clearButton);
 
-            constraints.gridx = 0;
-            constraints.gridy = 1;
-            constraints.gridwidth = 4;
-            constraints.fill = GridBagConstraints.BOTH;
-            constraints.weightx = 1.0;
-            constraints.weighty = 1.0;
+            JScrollPane pane = new JScrollPane(textArea);
+            timerFrame.add(pane);
 
-            add(new JScrollPane(textArea), constraints);
 
             // starts Pomodoro Timer
             timer.startTimer(timer.getPomodoroLength());
@@ -282,10 +300,32 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
                     }
                 }
             });
-
-            setSize(480, 320);
-            setLocationRelativeTo(null);    // centers on screen
         }
 
+    }
+
+    public class SelectionWindow {
+
+        JFrame frame = new JFrame();
+        JLabel label = new JLabel("Hello!");
+
+        SelectionWindow() {
+
+            label.setBounds(0, 0, 100, 50);
+            label.setFont(new Font(null, Font.PLAIN, 25));
+
+            frame.add(label);
+
+            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            frame.setSize(420, 420);
+            frame.setLayout(null);
+            frame.setVisible(true);
+        }
+    }
+
+    // MODIFIES: TempCollection
+    // EFFECTS: allows user to select Pokemon if available
+    private void doSelection() {
+        timer.getTempCollection().printTempCollection();
     }
 }
