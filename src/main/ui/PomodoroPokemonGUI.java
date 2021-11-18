@@ -38,6 +38,7 @@ import persistence.Reading;
 import persistence.Writing;
 
 import java.awt.*;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.AbstractButton;
@@ -48,6 +49,8 @@ import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -62,6 +65,7 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
     private JButton pauseButton;
     private JButton unpauseButton;
     private JButton resetButton;
+    private JButton exitButton;
     private JButton clearButton;
     private PomodoroTimer timer;
     private Pokemon pokemon;
@@ -134,9 +138,11 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
         if ("timer".equals(e.getActionCommand())) {
             new TimerMenu().setVisible(true);
         } else if ("collection".equals(e.getActionCommand())) {
-            SelectionWindow selectionWindow = new SelectionWindow();
-            System.out.println("You have Pokémon waiting to be added to your collection!");
-            doSelection();
+            try {
+                new CollectionPanel();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         } else if ("quit".equals(e.getActionCommand())) {
             System.out.println("See you next time!");
             System.exit(0);
@@ -177,9 +183,25 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
     }
 
     /**
-     * This class extends from OutputStream to redirect output to a JTextArrea
+     * Create the GUI and show it.  For thread safety,
      *
      * @author www.codejava.net
+     * @@ -172,4 +142,150 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
+     * frame.setVisible(true);
+     * }
+     * <p>
+     * public static void main(String[] args) {
+     * //Schedule a job for the event-dispatching thread:
+     * //creating and showing this application's GUI.
+     * javax.swing.SwingUtilities.invokeLater(new Runnable() {
+     * public void run() {
+     * createAndShowGUI();
+     * }
+     * });
+     * }
+     * <p>
+     * /**
+     * This class extends from OutputStream to redirect output to a JTextArrea
      */
     public static class CustomOutputStream extends OutputStream {
         private JTextArea textArea;
@@ -203,7 +225,7 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
      *
      * @author www.codejava.net
      */
-    public class TimerMenu extends JPanel {
+    public class TimerMenu extends JFrame {
         /**
          * The text area which is used for displaying logging information.
          */
@@ -211,12 +233,10 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
 
         private PrintStream standardOut;
 
+
         @SuppressWarnings({"checkstyle:MethodLength", "checkstyle:SuppressWarnings"})
         public TimerMenu() {
-            JFrame timerFrame = new JFrame("Pomodoro Timer");
-
-            timerFrame.pack();
-            timerFrame.setVisible(true);
+            super("Pomodoro Timer");
 
             timer = new PomodoroTimer();
 
@@ -232,31 +252,46 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
             System.setErr(printStream);
 
             // creates the GUI
-            timerFrame.setDefaultCloseOperation(timerFrame.DISPOSE_ON_CLOSE);
-            timerFrame.setSize(420, 420);
-            timerFrame.setVisible(true);
+            setLayout(new GridBagLayout());
+            GridBagConstraints constraints = new GridBagConstraints();
+            constraints.gridx = 0;
+            constraints.gridy = 0;
+            constraints.insets = new Insets(10, 5, 10, 5);
+            constraints.anchor = GridBagConstraints.WEST;
 
             // Pause
             pauseButton = new JButton("Pause");
-            pauseButton.setVerticalTextPosition(AbstractButton.CENTER);
-            pauseButton.setHorizontalTextPosition(AbstractButton.LEADING); //aka LEFT, for left-to-right locales
-            add(pauseButton);
+            add(pauseButton, constraints);
 
             // Un-pause
             unpauseButton = new JButton("Un-pause");
-            add(unpauseButton);
+            constraints.gridx = 1;
+            add(unpauseButton, constraints);
 
             // Reset
             resetButton = new JButton("Reset");
-            add(resetButton);
+            constraints.gridx = 2;
+            add(resetButton, constraints);
+
+            // Exit
+            exitButton = new JButton("Exit");
+            constraints.gridx = 3;
+            add(exitButton, constraints);
 
             // Clear
             clearButton = new JButton("Clear");
-            add(clearButton);
+            constraints.gridx = 4;
+            add(clearButton, constraints);
 
-            JScrollPane pane = new JScrollPane(textArea);
-            timerFrame.add(pane);
 
+            constraints.gridx = 0;
+            constraints.gridy = 1;
+            constraints.gridwidth = 4;
+            constraints.fill = GridBagConstraints.BOTH;
+            constraints.weightx = 1.0;
+            constraints.weighty = 1.0;
+
+            add(new JScrollPane(textArea), constraints);
 
             // starts Pomodoro Timer
             timer.startTimer(timer.getPomodoroLength());
@@ -285,6 +320,18 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
                 }
             });
 
+            // adds event handler for button Exit
+            exitButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.setOut(standardOut);
+                    System.setErr(standardOut);
+
+                    dispose();
+                    exitAndGoToSelection();
+                }
+            });
+
 
             // adds event handler for button Clear
             clearButton.addActionListener(new ActionListener() {
@@ -300,32 +347,148 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
                     }
                 }
             });
+
+            setSize(480, 320);
+            setLocationRelativeTo(null);    // centers on screen
         }
 
     }
 
-    public class SelectionWindow {
+    private void exitAndGoToSelection() {
+        timer.exitTimer();
+        if (!timer.getTempCollection().getTempCollectionList().isEmpty()) {
+            new SelectionMenu();
+        }
+    }
 
-        JFrame frame = new JFrame();
-        JLabel label = new JLabel("Hello!");
+    public class SelectionMenu extends JFrame {
+        private JFrame frame;
+        private JPanel panel;
+        private JButton yesButton;
+        private JButton noButton;
+        private JLabel label;
+        private JLabel keepOrDiscardLabel;
+        private JLabel collectionOrReleasedLabel;
 
-        SelectionWindow() {
+        public SelectionMenu() {
+            selectionGUI();
+        }
 
-            label.setBounds(0, 0, 100, 50);
-            label.setFont(new Font(null, Font.PLAIN, 25));
-
-            frame.add(label);
-
-            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-            frame.setSize(420, 420);
-            frame.setLayout(null);
+        public void selectionGUI() {
+            frame = new JFrame("Pokemon Selection");
             frame.setVisible(true);
+            frame.setSize(600, 200);
+            frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+            panel = new JPanel();
+            panel.setBackground(Color.PINK);
+
+            yesButton = new JButton("YES");
+            yesButton.setVerticalTextPosition(AbstractButton.BOTTOM);
+            yesButton.setHorizontalTextPosition(AbstractButton.CENTER);
+
+            noButton = new JButton("NO");
+            noButton.setVerticalTextPosition(AbstractButton.BOTTOM);
+            noButton.setHorizontalTextPosition(AbstractButton.RIGHT);
+
+            label = new JLabel("You have Pokémon waiting to be added to your collection!");
+
+            keepOrDiscardLabel = new JLabel("");
+
+            collectionOrReleasedLabel = new JLabel("");
+            collectionOrReleasedLabel.setForeground(Color.BLUE);
+
+            panel.add(yesButton);
+            panel.add(noButton);
+            panel.add(label);
+            panel.add(keepOrDiscardLabel);
+            panel.add(collectionOrReleasedLabel);
+            frame.add(panel);
+
+            pokemon = timer.getTempCollection().getTempCollectionList().get(0);
+            keepOrDiscardLabel.setText("Would you like to keep" + pokemon.getPokemonName() + "?");
+
+            // adds event handler for button Yes
+            yesButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                    pokemonCollection.addPokemonToCollection(pokemon);
+                    collectionOrReleasedLabel.setText(pokemon.getPokemonName() + " added to collection.");
+                    timer.getTempCollection().getTempCollectionList().remove(pokemon);
+                    if (timer.getTempCollection().getTempCollectionList().isEmpty()) {
+                        frame.dispose();
+                        return;
+                    }
+                    pokemon = timer.getTempCollection().getTempCollectionList().get(0);
+                    keepOrDiscardLabel.setText("Would you like to keep" + pokemon.getPokemonName() + "?");
+                }
+            });
+
+            // adds event handler for button No
+            noButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    collectionOrReleasedLabel.setText(pokemon.getPokemonName() + " was released.");
+                    timer.getTempCollection().getTempCollectionList().remove(pokemon);
+                    if (timer.getTempCollection().getTempCollectionList().isEmpty()) {
+                        frame.dispose();
+                        return;
+                    }
+                    pokemon = timer.getTempCollection().getTempCollectionList().get(0);
+                    keepOrDiscardLabel.setText("Would you like to keep" + pokemon.getPokemonName() + "?");
+                }
+            });
         }
     }
 
-    // MODIFIES: TempCollection
-    // EFFECTS: allows user to select Pokemon if available
-    private void doSelection() {
-        timer.getTempCollection().printTempCollection();
+    public class CollectionPanel extends JPanel {
+        private JFrame frame;
+        private JPanel panel;
+        private JLabel title;
+        private JLabel pokemonList;
+
+
+        public CollectionPanel() throws IOException {
+            collectionGUI();
+        }
+
+        public void collectionGUI() {
+
+            try {
+                BufferedImage img = ImageIO.read(new File(
+                        "/Users/Luigi/Desktop/University/CPSC 210/project_f1i0f_2/data/pokemonimg.jpeg"));
+
+                frame = new JFrame("Pokemon Collection");
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+                frame.setContentPane(new JLabel(new ImageIcon(img)));
+
+                frame.setLayout(new GridBagLayout());
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.gridwidth = GridBagConstraints.REMAINDER;
+
+                panel = new JPanel();
+                JScrollPane scroller = new JScrollPane(panel);
+                frame.add(scroller);
+
+                title = new JLabel("Your Pokemon Collection");
+                title.setForeground(Color.MAGENTA);
+                frame.add(title, gbc);
+
+                pokemonList = new JLabel("");
+
+                for (Pokemon pokemon : pokemonCollection.getCollection()) {
+                    pokemonList = new JLabel(pokemon.getPokemonName());
+                    frame.add(pokemonList, gbc);
+                }
+
+                frame.pack();
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
