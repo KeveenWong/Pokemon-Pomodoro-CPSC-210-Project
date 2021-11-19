@@ -70,9 +70,10 @@ class PomodoroTimerTest {
     public void testResetTimer() {
         timer.startTimer(10);
         timer.resetTimer();
-        assertEquals(timer.getPomodoroLength(), timer.getRemainingTime());
         timer.pauseTimer();
+        assertEquals(timer.getPomodoroLength(), timer.getRemainingTime());
         assertTrue(timer.getPaused());
+        timer.pauseTimer();
         timer.resetTimer();
         assertEquals(timer.getPomodoroLength(), timer.getRemainingTime());
 
