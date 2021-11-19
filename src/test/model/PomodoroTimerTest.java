@@ -56,6 +56,7 @@ class PomodoroTimerTest {
     @Test
     public void testUnpauseTimer() throws InterruptedException {
         timer.startTimer(5);
+        timer.unpauseTimer();
         Thread.sleep(1000);
         assertEquals(4, timer.getRemainingTime(), DELTA);
         timer.pauseTimer();

@@ -24,7 +24,6 @@ public class PomodoroTimer {
     private static int period = 1000;
     private boolean paused = true;
     private int remainingTime;              // remaining time in timer
-    private int actualTime;                 // actual time of timer (remainingTime ticks once too quick)
     private int pomodoroCounter;            // tracks number of fully complete Pomodoros
     private TempCollection tempCollection;
     private PokemonCollection pokemonCollection;
@@ -59,10 +58,6 @@ public class PomodoroTimer {
         return tempCollection;
     }
 
-    public Integer getActualTime() {
-        return actualTime;
-    }
-
     // REQUIRES: initialTime > 0
     // MODIFIES: this
     // EFFECTS: prints starting time, sets paused to false, sets remainingTime to initialTime, and begins timer tick
@@ -83,7 +78,6 @@ public class PomodoroTimer {
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 System.out.println(round(remainingTime));
-                actualTime = remainingTime;
                 tickRemainingTime();
             }
         }, 0, period);
@@ -141,7 +135,6 @@ public class PomodoroTimer {
     private void tickRemainingTime() throws NullPointerException {
         if (remainingTime == 0) {
             switchBetweenCases();
-            actualTime = remainingTime;
             timer.cancel();
             timer.purge();
             startTicking();
@@ -153,7 +146,7 @@ public class PomodoroTimer {
     // MODIFIES: this
     // EFFECTS: pauses timer by setting paused = true
     public void pauseTimer() {
-        if (paused == true) {
+        if (paused) {
             return;
         }
         System.out.println("Paused");
@@ -164,7 +157,7 @@ public class PomodoroTimer {
     // MODIFIES: this
     // EFFECTS: un-pauses timer by setting paused = false
     public void unpauseTimer() {
-        if (paused == false) {
+        if (!paused) {
             return;
         }
         paused = false;

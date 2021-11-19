@@ -33,7 +33,7 @@ public class Pokemon implements Writable {
         int index = (int) (Math.random() * pokemonList.pokemonList.size());
         String name = pokemonList.pokemonList.get(index);
         Pokemon pokemon = new Pokemon(name, "");
-        System.out.println("Your Pokémon is..." + name);
+        System.out.println("Your Pokemon is..." + name);
         return pokemon;
     }
 
