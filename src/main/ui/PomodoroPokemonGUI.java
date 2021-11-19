@@ -29,6 +29,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*
+this class references code from the following sources:
+https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html
+https://stackoverflow.com/questions/22162398/how-to-set-a-background-picture-in-jpanel
+https://www.codejava.net/java-se/swing/redirect-standard-output-streams-to-jtextarea
+*/
+
 package ui;
 
 import model.Pokemon;
@@ -48,10 +55,10 @@ import javax.swing.JFrame;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
+// Pokemon Pomodoro GUI application
 public class PomodoroPokemonGUI extends JPanel implements ActionListener {
     private static final String JSON_STORE = "./data/pokemoncollection.json";
     private JButton timerButton;
@@ -70,10 +77,46 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
     private PokemonCollection pokemonCollection;
     private Writing jsonWriter;
     private Reading jsonReader;
-    private int currentTimerValue;
-    private int timerSpeed = 1000;
-    private int timerDelay = 1000;
 
+    /**
+     * Create the GUI and show it.  For thread safety,
+     * this method should be invoked from the
+     * event-dispatching thread.
+     */
+
+    // MODIFIES: this
+    // EFFECTS: creates the GUI and shows it
+    public static void createAndShowGUI() {
+
+        // Create and set up the window.
+        JFrame frame = new JFrame("PomodoroPokemonGUI");
+        frame.setSize(600,300);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Create and set up the content pane.
+        PomodoroPokemonGUI newContentPane = new PomodoroPokemonGUI();
+        newContentPane.setOpaque(true); //content panes must be opaque
+        frame.setContentPane(newContentPane);
+        newContentPane.setBackground(Color.darkGray);
+
+        // Centre the window
+        frame.setLocationRelativeTo(null);
+    }
+
+    // EFFECTS: runs the program
+    public static void main(String[] args) {
+        //Schedule a job for the event-dispatching thread:
+        //creating and showing this application's GUI.
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                createAndShowGUI();
+            }
+        });
+    }
+
+    // MODIFIES: this
+    // EFFECTS: initializes and adds all aspects of main GUI
     public PomodoroPokemonGUI() {
         initialize();
 
@@ -98,6 +141,8 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
         add(saveAndLoadLabel);
     }
 
+    // MODIFIES: this
+    // EFFECTS: initializes all buttons, sets action commands and tooltip text
     public void initializeMainButtons() {
         // Initialize all buttons to main GUI
         timerButton = new JButton("Pomodoro Timer");
@@ -133,7 +178,7 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
     }
 
     // MODIFIES: this
-    // EFFECTS: initializes timer, input, collections
+    // EFFECTS: initializes timer, collection, writer and reader
     public void initialize() {
         timer = new PomodoroTimer();
         pokemonCollection = new PokemonCollection();
@@ -141,6 +186,8 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
         jsonReader = new Reading(JSON_STORE);
     }
 
+    // MODIFIES: this
+    // EFFECTS: listens to action performed and runs code based on what button the user presses
     public void actionPerformed(ActionEvent e) {
         if ("timer".equals(e.getActionCommand())) {
             new TimerMenu().setVisible(true);
@@ -162,6 +209,8 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: loads Collection from file
     private void loadCollection() {
         try {
             pokemonCollection = jsonReader.read();
@@ -171,6 +220,8 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
         }
     }
 
+    // MODIFIES: this, pokemonCollection
+    // EFFECTS: saves Collection from file
     private void saveCollection() {
         try {
             jsonWriter.open();
@@ -182,61 +233,7 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
         }
     }
 
-
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event-dispatching thread.
-     */
-    public static void createAndShowGUI() {
-
-        // Create and set up the window.
-        JFrame frame = new JFrame("PomodoroPokemonGUI");
-        frame.setSize(600,300);
-        frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // Create and set up the content pane.
-        PomodoroPokemonGUI newContentPane = new PomodoroPokemonGUI();
-        newContentPane.setOpaque(true); //content panes must be opaque
-        frame.setContentPane(newContentPane);
-        newContentPane.setBackground(Color.darkGray);
-
-        // Centre the window
-        frame.setLocationRelativeTo(null);
-    }
-
-    public static void main(String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-    }
-
-    /**
-     * Create the GUI and show it.  For thread safety,
-     *
-     * @author www.codejava.net
-     * @@ -172,4 +142,150 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
-     * frame.setVisible(true);
-     * }
-     * <p>
-     * public static void main(String[] args) {
-     * //Schedule a job for the event-dispatching thread:
-     * //creating and showing this application's GUI.
-     * javax.swing.SwingUtilities.invokeLater(new Runnable() {
-     * public void run() {
-     * createAndShowGUI();
-     * }
-     * });
-     * }
-     * <p>
-     * /**
-     * This class extends from OutputStream to redirect output to a JTextArrea
-     */
+    // EFFECTS: Extends from OutputStream to redirect output to a JTextArea
     public static class CustomOutputStream extends OutputStream {
         private JTextArea textArea;
 
@@ -245,7 +242,8 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
         }
 
         @Override
-        public void write(int b) throws IOException {
+        // EFFECTS: redirects data and scrolls the text area to the end of data
+        public void write(int b) {
             // redirects data to the text area
             textArea.append(String.valueOf((char) b));
             // scrolls the text area to the end of data
@@ -259,6 +257,7 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
      *
      * @author www.codejava.net
      */
+    // Menu for Timer
     public class TimerMenu extends JFrame {
         /**
          * The text area which is used for displaying logging information.
@@ -267,13 +266,116 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
 
         private PrintStream standardOut;
 
+        private GridBagConstraints constraints;
 
-        @SuppressWarnings({"checkstyle:MethodLength", "checkstyle:SuppressWarnings"})
+        // MODIFIES: this
+        // EFFECTS: initializes and adds all aspects of Timer GUI
         public TimerMenu() {
             super("Pomodoro Timer");
 
             timer = new PomodoroTimer();
 
+            printConsoleToJTextArea();
+
+            initializeGuiAndAddButtons();
+
+            addScrollPaneWithConstraints();
+
+            // starts Pomodoro Timer
+            timer.startTimer(timer.getPomodoroLength());
+
+            addMainTimerActions();
+
+            addOtherTimerActions();
+
+            setSize(480, 320);
+            setLocationRelativeTo(null);    // centers on screen
+        }
+
+        // MODIFIES: this
+        // EFFECTS: adds timer actions for exitButton and clearButton
+        private void addOtherTimerActions() {
+            // adds event handler for button Exit
+            exitButton.addActionListener(new ActionListener() {
+                @Override
+                // EFFECTS: performs action for exitButton
+                public void actionPerformed(ActionEvent e) {
+                    System.setOut(standardOut);
+                    System.setErr(standardOut);
+
+                    dispose();
+                    exitAndGoToSelection();
+                }
+            });
+
+
+            // adds event handler for button Clear
+            clearButton.addActionListener(new ActionListener() {
+                @Override
+                // EFFECTS: performs action for clearButton
+                public void actionPerformed(ActionEvent evt) {
+                    // clears the text area
+                    try {
+                        textArea.getDocument().remove(0,
+                                textArea.getDocument().getLength());
+                        standardOut.println("Text area cleared");
+                    } catch (BadLocationException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+        }
+
+        // MODIFIES: this, timer
+        // EFFECTS: adds timer actions for pauseButton, unpauseButton, resetButton
+        private void addMainTimerActions() {
+            // adds event handler for button Pause
+            pauseButton.addActionListener(new ActionListener() {
+                @Override
+                // MODIFIES: timer
+                // EFFECTS: performs action for pauseButton
+                public void actionPerformed(ActionEvent e) {
+                    timer.pauseTimer();
+                }
+            });
+
+            // adds event handler for button Un-pause
+            unpauseButton.addActionListener(new ActionListener() {
+                @Override
+                // MODIFIES: timer
+                // EFFECTS: performs action for unpauseButton
+                public void actionPerformed(ActionEvent e) {
+                    timer.unpauseTimer();
+                }
+            });
+
+            // adds event handler for button Reset
+            resetButton.addActionListener(new ActionListener() {
+                @Override
+                // MODIFIES: timer
+                // EFFECTS: performs action for resetButton
+                public void actionPerformed(ActionEvent e) {
+                    timer.resetTimer();
+                }
+            });
+        }
+
+        // MODIFIES: this
+        // EFFECTS: adds scroll pane to textArea with constraints
+        private void addScrollPaneWithConstraints() {
+            constraints.gridx = 0;
+            constraints.gridy = 1;
+            constraints.gridwidth = 4;
+            constraints.fill = GridBagConstraints.BOTH;
+            constraints.weightx = 1.0;
+            constraints.weighty = 1.0;
+
+            add(new JScrollPane(textArea), constraints);
+        }
+
+        // MODIFIES: this
+        // EFFECTS: prints console text to the JTextArea
+        private void printConsoleToJTextArea() {
             textArea = new JTextArea(50, 10);
             textArea.setEditable(false);
             PrintStream printStream = new PrintStream(new CustomOutputStream(textArea));
@@ -285,10 +387,14 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
             // re-assigns standard output stream and error output stream
             System.setOut(printStream);
             System.setErr(printStream);
+        }
 
+        // MODIFIES: this
+        // EFFECTS: creates GUI and adds buttons to GUI
+        private void initializeGuiAndAddButtons() {
             // creates the GUI
             setLayout(new GridBagLayout());
-            GridBagConstraints constraints = new GridBagConstraints();
+            constraints = new GridBagConstraints();
             constraints.gridx = 0;
             constraints.gridy = 0;
             constraints.insets = new Insets(10, 5, 10, 5);
@@ -317,78 +423,12 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
             clearButton = new JButton("Clear");
             constraints.gridx = 4;
             add(clearButton, constraints);
-
-
-            constraints.gridx = 0;
-            constraints.gridy = 1;
-            constraints.gridwidth = 4;
-            constraints.fill = GridBagConstraints.BOTH;
-            constraints.weightx = 1.0;
-            constraints.weighty = 1.0;
-
-            add(new JScrollPane(textArea), constraints);
-
-            // starts Pomodoro Timer
-            timer.startTimer(timer.getPomodoroLength());
-
-            // adds event handler for button Pause
-            pauseButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    timer.pauseTimer();
-                }
-            });
-
-            // adds event handler for button Un-pause
-            unpauseButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    timer.unpauseTimer();
-                }
-            });
-
-            // adds event handler for button Reset
-            resetButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    timer.resetTimer();
-                }
-            });
-
-            // adds event handler for button Exit
-            exitButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    System.setOut(standardOut);
-                    System.setErr(standardOut);
-
-                    dispose();
-                    exitAndGoToSelection();
-                }
-            });
-
-
-            // adds event handler for button Clear
-            clearButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent evt) {
-                    // clears the text area
-                    try {
-                        textArea.getDocument().remove(0,
-                                textArea.getDocument().getLength());
-                        standardOut.println("Text area cleared");
-                    } catch (BadLocationException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            });
-
-            setSize(480, 320);
-            setLocationRelativeTo(null);    // centers on screen
         }
 
     }
 
+    // MODIFIES: timer
+    // EFFECTS: exits Pomodoro Timer and enters Selection Menu
     private void exitAndGoToSelection() {
         timer.exitTimer();
         if (!timer.getTempCollection().getTempCollectionList().isEmpty()) {
@@ -405,11 +445,9 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
         private JLabel keepOrDiscardLabel;
         private JLabel collectionOrReleasedLabel;
 
+        // MODIFIES: this
+        // EFFECTS: creates Selection Menu with all buttons and labels
         public SelectionMenu() {
-            selectionGUI();
-        }
-
-        public void selectionGUI() {
             initSelectionGui();
 
             panel.add(yesButton);
@@ -424,10 +462,13 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
             handleSelectionActions();
         }
 
+        // EFFECTS: handles Yes and No selection options
         private void handleSelectionActions() {
             // adds event handler for button Yes
             yesButton.addActionListener(new ActionListener() {
                 @Override
+                // MODIFIES: this, TempCollection
+                // EFFECTS: performs action for yesButton (adds pokemon, checks next Pokemon if there is one)
                 public void actionPerformed(ActionEvent e) {
 
                     addPokemonToCollection();
@@ -442,6 +483,9 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
             // adds event handler for button No
             noButton.addActionListener(new ActionListener() {
                 @Override
+                // MODIFIES: this, TempCollection
+                // EFFECTS: performs action for noButton (releases pokemon and checks for next pokemon,
+                // closes menu if no more pokemon
                 public void actionPerformed(ActionEvent e) {
                     releasePokemon();
                     if (timer.getTempCollection().getTempCollectionList().isEmpty()) {
@@ -453,22 +497,29 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
             });
         }
 
+        // EFFECTS: asks user about next pokemon in TempCollection
         private void inquireNextPokemon() {
             pokemon = timer.getTempCollection().getTempCollectionList().get(0);
             keepOrDiscardLabel.setText("Would you like to keep" + pokemon.getPokemonName() + "?");
         }
 
+        // MODIFIES: this, TempCollection
+        // EFFECTS: removes pokemon from TempCollection
         private void releasePokemon() {
             collectionOrReleasedLabel.setText(pokemon.getPokemonName() + " was released.");
             timer.getTempCollection().getTempCollectionList().remove(pokemon);
         }
 
+        // MODIFIES: this, pokemonCollection, TempCollection
+        // EFFECTS: adds pokemon to pokemonCollection and removes from TempCollection
         private void addPokemonToCollection() {
             pokemonCollection.addPokemonToCollection(pokemon);
             collectionOrReleasedLabel.setText(pokemon.getPokemonName() + " added to collection.");
             timer.getTempCollection().getTempCollectionList().remove(pokemon);
         }
 
+        // MODIFIES: this
+        // EFFECTS: creates Selection Menu GUI
         private void initSelectionGui() {
             frame = new JFrame("Pokemon Selection");
             frame.setVisible(true);
@@ -505,13 +556,9 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
         GridBagConstraints gbc = new GridBagConstraints();
 
 
-
+        // MODIFIES: this
+        // EFFECTS: initializes and creates Collection Panel with all collected pokemon listed
         public CollectionPanel() throws IOException {
-            collectionGUI();
-        }
-
-        public void collectionGUI() {
-
             initializeCollectionGui();
 
             // prints all Pokemon in collection
@@ -525,6 +572,8 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
             // adds event handler for button Exit
             exitButton.addActionListener(new ActionListener() {
                 @Override
+                // MODIFIES: this
+                // EFFECTS: performs action for exitButton (dispose/close Collection Panel)
                 public void actionPerformed(ActionEvent e) {
                     frame.dispose();
                 }
@@ -535,6 +584,8 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
             frame.setVisible(true);
         }
 
+        // MODIFIES: this
+        // EFFECTS: initializes Collection Panel GUI
         private void initializeCollectionGui() {
             try {
                 BufferedImage img = ImageIO.read(new File(

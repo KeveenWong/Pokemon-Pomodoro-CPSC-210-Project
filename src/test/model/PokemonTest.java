@@ -25,8 +25,4 @@ public class PokemonTest {
         }
     }
 
-    @Test
-    public void testAllPokemonListFail() {
-        assertThrows(IllegalStateException.class, () -> new AllPokemonList("test"));
-    }
 }
