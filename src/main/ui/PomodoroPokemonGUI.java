@@ -239,7 +239,7 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
     }
 
     // EFFECTS: Extends from OutputStream to redirect output to a JTextArea
-    public static class CustomOutputStream extends OutputStream {
+    private static class CustomOutputStream extends OutputStream {
         private JTextArea textArea;
 
         public CustomOutputStream(JTextArea textArea) {
@@ -263,7 +263,7 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
      * @author www.codejava.net
      */
     // Menu for Timer
-    public class TimerMenu extends JFrame {
+    private class TimerMenu extends JFrame {
         /**
          * The text area which is used for displaying logging information.
          */
@@ -441,7 +441,7 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
         }
     }
 
-    public class SelectionMenu extends JFrame {
+    private class SelectionMenu extends JFrame {
         private JFrame frame;
         private JPanel panel;
         private JButton yesButton;
@@ -551,7 +551,7 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
         }
     }
 
-    public class CollectionPanel extends JPanel {
+    private class CollectionPanel extends JPanel {
         private JFrame frame;
         private JPanel panel;
         private JLabel title;
