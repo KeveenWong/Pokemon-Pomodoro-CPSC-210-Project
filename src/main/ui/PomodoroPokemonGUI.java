@@ -38,6 +38,8 @@ https://www.codejava.net/java-se/swing/redirect-standard-output-streams-to-jtext
 
 package ui;
 
+import model.Event;
+import model.EventLog;
 import model.Pokemon;
 import model.PokemonCollection;
 import model.PomodoroTimer;
@@ -92,7 +94,7 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
         JFrame frame = new JFrame("PomodoroPokemonGUI");
         frame.setSize(600,300);
         frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         // Create and set up the content pane.
         PomodoroPokemonGUI newContentPane = new PomodoroPokemonGUI();
@@ -205,6 +207,9 @@ public class PomodoroPokemonGUI extends JPanel implements ActionListener {
             loadCollection();
         } else if ("quit".equals(e.getActionCommand())) {
             System.out.println("See you next time!");
+            for (Event event : EventLog.getInstance()) {
+                System.out.println(event);
+            }
             System.exit(0);
         }
     }

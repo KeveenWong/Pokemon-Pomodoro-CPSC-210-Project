@@ -37,13 +37,17 @@
 > - Pause a Pomodoro Timer
 > - Unpause a Pomodoro timer
 > - Reset a Pomodoro Timer
-> - Start the break after a Pomodoro*
 > - Choose which Pokémon I want to add to my collection
 > - Check my collection of Pokémon
 > - Save my Pokémon collection to file
 > - Load my Pokémon collection to file
-> 
+>
 
+Phase 4: Task 2
+> Wed Nov 24 12:58:14 PST 2021 \
+> Added Pokemon to Collection.\
+> Wed Nov 24 12:58:14 PST 2021 \
+> Added Pokemon to Collection.
 
 *© 2021 Pokémon. © 1995–2021 Nintendo/Creatures Inc./GAME FREAK inc. Pokémon, Pokémon character names, Nintendo Switch, 
 Nintendo 3DS, Nintendo DS, Wii, Wii U, and WiiWare are trademarks of Nintendo.*

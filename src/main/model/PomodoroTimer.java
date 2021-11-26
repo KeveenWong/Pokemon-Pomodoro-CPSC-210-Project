@@ -1,12 +1,9 @@
 package model;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.TimerTask;
 import java.util.Timer;
 
 import static java.lang.Math.round;
-import static org.junit.jupiter.api.Assertions.fail;
 
 // Pomodoro Timer with study (Pomodoro) timer, short break, and long break
 public class PomodoroTimer {

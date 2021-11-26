@@ -43,6 +43,7 @@ public class PokemonCollection {
     // EFFECTS: adds given Pokemon to collection list
     public void addPokemonToCollection(Pokemon pokemon) {
         collection.add(pokemon);
+        EventLog.getInstance().logEvent(new Event("Added Pokemon to Collection."));
     }
 
     public JSONObject toJson() {
