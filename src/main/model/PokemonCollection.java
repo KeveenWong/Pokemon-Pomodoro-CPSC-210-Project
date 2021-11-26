@@ -2,9 +2,7 @@ package model;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import persistence.Writable;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -58,6 +56,8 @@ public class PokemonCollection {
 
         for (Pokemon p : collection) {
             jsonArray.put(p.toJson());
+            EventLog.getInstance().logEvent(new Event("Saved Pokemon to JSON."));
+
         }
 
         return jsonArray;

@@ -23,10 +23,8 @@ public class PomodoroTimer {
     private int remainingTime;              // remaining time in timer
     private int pomodoroCounter;            // tracks number of fully complete Pomodoros
     private TempCollection tempCollection;
-    private PokemonCollection pokemonCollection;
 
     public PomodoroTimer() {
-        pokemonCollection = new PokemonCollection();
         tempCollection = new TempCollection();
     }
 
